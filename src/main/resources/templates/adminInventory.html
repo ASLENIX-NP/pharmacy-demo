@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory | ABIS PLUS</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Header -->
+<div th:replace="~{header :: abis-navbar}"></div>
+
+<div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
+    <div id="sidebarWrapper" class="collapse collapse-horizontal show border-end bg-white">
+        <div th:replace="~{adminSidebar :: abis-sidebar}"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1 p-4">
+        <button class="btn btn-sm btn-outline-secondary mb-3 d-flex align-items-center gap-2"
+                data-bs-toggle="collapse" data-bs-target="#sidebarWrapper">
+            <i class="bi bi-layout-sidebar"></i>
+            <span>Sidebar</span>
+        </button>
+
+
+
+        <div class="container-fluid">
+            <h1 class="mb-1">Inventory Management</h1>
+            <p class="text-muted mb-4">Manage medicines, stock levels, and expiry dates.</p>
+
+
+             <!-- Display Success Messages -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                <i class="bi bi-check-circle me-2"></i>
+                <strong>Success!</strong> <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Display Error Messages -->
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                <strong>Error!</strong> <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+             <!-- Tabs for inventory ,product, category -->
+            <ul class="nav nav-tabs mb-4" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab">
+                        <i class="bi bi-archive-fill me-2"></i>Inventory
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="product-tab" data-bs-toggle="tab" data-bs-target="#product" type="button" role="tab">
+                        <i class="bi bi-tag me-2"></i>Product
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#category" type="button" role="tab">
+                        <i class="bi bi-boxes me-2"></i>Category
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                 <!-- inventory  Table -->
+                <div class="tab-pane fade show active" id="inventory" role="tabpanel">
+                    <div class="d-flex gap-2 mb-4">
+                        
+                        <a th:href="@{/admin/inventory/add}" class="btn btn-success">
+                            <i class="bi bi-plus-circle me-2"></i>Add Inventory
+                        </a>
+                        
+                        <button class="btn btn-outline-secondary">
+                            <i class="bi bi-download me-2"></i>Export Inventory
+                        </button>
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Batch Number</th>
+                                            <th>Stock</th>
+                                            <th>Expiry Date</th>
+                                            <th>Supplier</th>
+                                            <th>Cost Price</th>
+                                            <th>selling Price</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each = "ib:${inventoryBatch}">
+                                            <td><span class="fw-semibold">[[${ib.product.genericName}]]<br>[[${ib.product.name}]]</span></td>
+                                            <td>[[${ib.batchNumber}]]</td>
+                                            <td>[[${ib.currentStock}]]</td></span></td>
+                                            <td>[[${ib.expiryDate}]]</td>
+                                            <td>[[${ib.purchaseOrder.supplier.companyName}]]</td>
+                                            <td>[[${ib.costPrice}]]</td>
+                                            <td>[[${ib.sellingPrice}]]</td>
+
+                                            <td>
+                                                <a th:href="@{/admin/inventory/edit(id=${ib.id})}">
+                                                    <input type="submit" value="Edit" class="btn btn-sm btn-outline-primary"></a>
+
+                                            </td>
+                                        </tr>
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- product Table -->
+
+                <div class="tab-pane fade " id="product" role="tabpanel">
+                    <div class="d-flex gap-2 mb-4">
+                        
+                        <a th:href="@{/admin/product/add}" class="btn btn-success">
+                            <i class="bi bi-plus-circle me-2"></i>Add Product
+                        </a>
+                        
+                        <button class="btn btn-outline-secondary">
+                            <i class="bi bi-download me-2"></i>Export Product
+                        </button>
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Product Name</th>
+                                            <th>Category</th>
+                                            <th>Rack Location</th>
+                                            <th>minimum Stock Level</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each = "p:${products}">
+                                            <td>[[${p.id}]]</td>
+                                            <td><span class="fw-semibold">[[${p.genericName}]]<br>[[${p.name}]]</span></td>
+                                            <td>[[${p.category.categoryName}]]</td>
+                                            <td>[[${p.rackLocation}]]</td>
+                                            <td>[[${p.minStockLevel}]]</td>
+                                            <td>
+                                                <a th:href="@{/admin/product/edit(id=${p.id})}">
+                                                    <input type="submit" value="Edit" class="btn btn-sm btn-outline-primary"></a>
+
+                                            </td>
+                                        </tr>
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+
+
+                 <!-- Category Table -->
+
+                <div class="tab-pane fade " id="category" role="tabpanel">
+
+                    <div class="d-flex gap-2 mb-4">
+                        
+                        <a th:href="@{/admin/category/add}" class="btn btn-success">
+                            <i class="bi bi-plus-circle me-2"></i>Add Category
+                        </a>
+                    
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Category Name</th>
+                                            <th>VAT %</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each = "c:${category}">
+                                            <td>[[${c.id}]]</td>
+                                            <td><span class="fw-semibold">[[${c.categoryName}]]</span></td>
+                                            <td>[[${c.vatPercent}]]</td>
+                                            <td>
+                                                <a th:href="@{/admin/category/edit(id=${c.id})}">
+                                                    <input type="submit" value="Edit" class="btn btn-sm btn-outline-primary"></a>
+
+                                            </td>
+                                        </tr>
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            
+            
+        </div>
+
+        
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{footer :: abis-footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New User | ABIS PLUS</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Header -->
+<div th:replace="~{header :: abis-navbar}"></div>
+
+<div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
+    <div id="sidebarWrapper" class="collapse collapse-horizontal show border-end bg-white">
+        <div th:replace="~{adminSidebar :: abis-sidebar}"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1 p-4">
+        <button class="btn btn-sm btn-outline-secondary mb-3 d-flex align-items-center gap-2"
+                data-bs-toggle="collapse" data-bs-target="#sidebarWrapper">
+            <i class="bi bi-layout-sidebar"></i>
+            <span>Sidebar</span>
+        </button>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <!-- Form Card -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-success text-white border-0">
+                            <h4 class="mb-0">
+                                <i class="bi bi-person-plus me-2"></i>Add New User
+                            </h4>
+                        </div>
+
+                        <div class="card-body p-4">
+                            
+
+                            <form th:action="@{/admin/users/add}" method="post" class="needs-validation" novalidate>
+                                <!-- First Name & Last Name Row -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="firstName" class="form-label fw-semibold">First Name *</label>
+                                        <input type="text" class="form-control" id="firstName" name="firstName"
+                                               placeholder="Enter first name"  required>
+                                        <div class="invalid-feedback">
+                                            First name is required.
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="lastName" class="form-label fw-semibold">Last Name *</label>
+                                        <input type="text" class="form-control" id="lastName" name="lastName"
+                                               placeholder="Enter last name"  required>
+                                        <div class="invalid-feedback">
+                                            Last name is required.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-semibold">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                           placeholder="Enter email address" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid email address.
+                                    </div>
+                                </div>
+
+                                <!-- Role Selection -->
+                                <div class="mb-3">
+                                    <label for="role" class="form-label fw-semibold">User Role *</label>
+                                    <select class="form-select" id="role" name="role"    required>
+                                        <option value="" selected disabled>-- Select a role --</option>
+                                        <option th:each="r:${role}" th:value = "${r}" >[[${r.getValue()}]]</option>
+
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a role.
+                                    </div>
+                                </div>
+
+                                <!-- status  Selection -->
+                                <div class="mb-3">
+                                    <label for="status" class="form-label fw-semibold">User Status *</label>
+                                    <select class="form-select" id="status" name="status"    required>
+                                        <option value="" selected disabled>-- Select a status --</option>
+                                        <option th:each="s:${status}" th:value = "${s}" >[[${s.getValue()}]]</option>
+
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a status.
+                                    </div>
+                                </div>
+
+
+                                <!-- Buttons -->
+                                <div class="d-grid gap-2 d-sm-flex justify-content-sm-between">
+                                    <a th:href="@{/admin/users}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left me-2"></i>Back to Users
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle me-2"></i>Create User
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Help Text -->
+                    <div class="alert alert-info mt-4 border-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Note:</strong> All fields marked with * are required. The username will be auto-generated based on the first name and user ID.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{footer :: abis-footer}"></div>
+
+<!-- Form Validation Script -->
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            let forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+
+</body>
+</html>

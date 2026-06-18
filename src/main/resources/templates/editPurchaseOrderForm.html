@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Purchase Order | ABIS PLUS</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Header -->
+<div th:replace="~{header :: abis-navbar}"></div>
+
+<div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
+    <div id="sidebarWrapper" class="collapse collapse-horizontal show border-end bg-white">
+        <div th:replace="~{adminSidebar :: abis-sidebar}"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1 p-4">
+        <button class="btn btn-sm btn-outline-secondary mb-3 d-flex align-items-center gap-2"
+                data-bs-toggle="collapse" data-bs-target="#sidebarWrapper">
+            <i class="bi bi-layout-sidebar"></i>
+            <span>Sidebar</span>
+        </button>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <!-- Form Card -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-success text-white border-0">
+                            <h4 class="mb-0">
+                                <i class="bi bi-person-plus me-2"></i>Add New Purchase Order
+                            </h4>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <!-- Display any error messages -->
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-circle me-2"></i>
+                                <strong>Error!</strong> <span th:text="${error}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+
+                            <!-- Display any success messages -->
+                            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle me-2"></i>
+                                <strong>Success!</strong> <span th:text="${success}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+
+                            <form th:action="@{/admin/purchaseOrder/edit}" method="post" class="needs-validation"
+                                  th:object ="${purchaseOrder}" novalidate>
+
+
+                                <!-- bill number   Row -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="billNumber" class="form-label fw-semibold">Bill Number *</label>
+                                        <input type="text" class="form-control" id="billNumber" name="billNumber"
+                                               placeholder="Enter  Bill Number"  th:field="*{billNumber}" required>
+                                        <div class="invalid-feedback">
+                                            Bill Number is required.
+                                        </div>
+                                    </div>
+
+                                    
+                                <!-- supplier  Selection -->
+                                <div class="mb-3">
+                                    <label for="supplier" class="form-label fw-semibold">Supplier  *</label>
+                                    <select class="form-select" id="supplier" name="supplier"  th:field="*{supplier}"  required>
+                                        <option value="" selected disabled>-- Select a supplier --</option>
+                                        <option th:each="s:${suppliers}" th:value = "${s.id}" >[[${s.getCompanyName()}]]</option>
+
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a Company.
+                                    </div>
+                                </div>
+
+                                  <!-- Amount Row -->
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="grandTotal" class="form-label fw-semibold">Amount *</label>
+                                        <input type="number" class="form-control no-spinners" id="grandTotal" name="grandTotal"
+                                              step="0.01" placeholder="Enter Company Name"  th:field="*{grandTotal}" required>
+                                        <div class="invalid-feedback">
+                                            Amount is required.
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- payment status Selection -->
+                                <div class="mb-3">
+                                    <label for="paymentStatus" class="form-label fw-semibold">Payment Status *</label>
+                                    <select class="form-select" id="paymentStatus" name="paymentStatus"   th:field="*{paymentStatus}"  required>
+                                        <option value="" selected disabled>-- Select a status --</option>
+                                        <option th:each="ps:${payment_status}" th:value = "${ps}" >[[${ps.getValue()}]]</option>
+
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a status.
+                                    </div>
+                                </div>
+
+
+                                <!-- Buttons -->
+                                <div class="d-grid gap-2 d-sm-flex justify-content-sm-between">
+                                    <a th:href="@{/admin/logistics}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left me-2"></i>Back to Logistics
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle me-2"></i>Edit Purchase Order 
+                                    </button>
+                                </div>
+                                
+                                <input type="hidden" th:field="*{purchaseNumber}">
+                                <input type="hidden" th:field="*{receivedDate}">
+
+
+                                <input type="hidden" th:field="*{id}">
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Help Text -->
+                    <div class="alert alert-info mt-4 border-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Note:</strong> All fields marked with * are required. The purchase ID will be auto-generated based on the first name and user ID.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{footer :: abis-footer}"></div>
+
+<!-- Form Validation Script -->
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            let forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+
+</body>
+</html>

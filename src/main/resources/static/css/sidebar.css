@@ -1,0 +1,23 @@
+/* Sidebar Styles */
+.hover-light:hover {
+    background-color: #f8f9fa;
+}
+
+.transition-all {
+    transition: all 0.2s ease;
+}
+
+/* Ensure the sidebar transition is smooth and doesn't push layout abruptly */
+#sidebarWrapper {
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+#sidebarWrapper.collapsing {
+    transition: width 0.3s ease;
+}
+
+.letter-spacing-1 {
+    letter-spacing: 1px;
+}
+

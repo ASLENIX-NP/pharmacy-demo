@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="810" height="810" viewBox="0 0 810 810">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(.24,0,0,.24,0,0)" d="M0 0H3375V3375H0Z" clip-rule="evenodd"/>
+</clipPath>
+<clipPath id="clip_2">
+<path transform="matrix(.24,0,0,.24,0,0)" d="M0 0H3375V3375H0Z" clip-rule="evenodd"/>
+</clipPath>
+<clipPath id="clip_3">
+<path transform="matrix(.24,0,0,.24,0,0)" d="M0 0H3375V3375H0Z" clip-rule="evenodd"/>
+</clipPath>
+</defs>
+<g clip-path="url(#clip_1)">
+<path transform="matrix(.75,0,0,.75,0,0)" d="M0 0H1080V1080H0Z" fill="#ffffff"/>
+</g>
+<g clip-path="url(#clip_2)">
+<path transform="matrix(.75,0,0,.75,0,0)" d="M0 0H1080V1080H0Z" fill="#ffffff"/>
+</g>
+<g clip-path="url(#clip_3)">
+<text fill="#ff00ff" xml:space="preserve" transform="matrix(.75 0 0 .75 144.4629 323.6491)" font-size="310.01" font-family="Bungee"><tspan y="227" x="0 226.30695 451.06379">AB+</tspan></text>
+<text fill="#00ffff" xml:space="preserve" transform="matrix(.75 0 0 .75 156.57874 312.3509)" font-size="310.01" font-family="Bungee"><tspan y="227" x="0 226.30695 451.06379">AB+</tspan></text>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.75 0 0 .75 150.52083 318)" font-size="310.01" font-family="Bungee"><tspan y="227" x="0 226.30695 451.06379">AB+</tspan></text>
+<text fill="#ff00ff" xml:space="preserve" transform="matrix(.75 0 0 .75 144.4629 323.6491)" font-size="310.01" font-family="Bungee"><tspan y="227" x="678.625"> </tspan></text>
+<text fill="#00ffff" xml:space="preserve" transform="matrix(.75 0 0 .75 156.57874 312.3509)" font-size="310.01" font-family="Bungee"><tspan y="227" x="678.625"> </tspan></text>
+<text fill-opacity="0" xml:space="preserve" transform="matrix(.75 0 0 .75 150.52083 318)" font-size="310.01" font-family="Bungee"><tspan y="227" x="678.625"> </tspan></text>
+<text fill="#7ed957" xml:space="preserve" transform="matrix(.75 0 0 .75 150.52083 318)" font-size="310.01" font-family="Bungee"><tspan y="227" x="0 226.30695 451.06379">AB+</tspan></text>
+<text fill="#7ed957" xml:space="preserve" transform="matrix(.75 0 0 .75 150.52083 318)" font-size="310.01" font-family="Bungee"><tspan y="227" x="678.625"> </tspan></text>
+</g>
+</svg>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Cashier View Bill | ABIS PLUS</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body  class="d-flex flex-column min-vh-100">
+
+  
+<div th:replace="~{header :: abis-navbar}"></div>
+
+<div class="d-flex flex-grow-1">
+	 <div id="sidebarWrapper" class="collapse collapse-horizontal show border-end bg-white">
+        <div th:replace="~{cashierSidebar :: abis-sidebar(currentPage='viewBill')}"></div>
+    </div>
+	
+	
+	<main class="flex-grow-1 p-4">
+        <!-- pages headders -->
+        <div class="container-fluid mt-2">
+            <div class="row g-4 mb-5 align-items-end"> 
+                
+                <!-- Left Column: Sidebar Button -->
+                <div class="col-md-4 col-lg-4 d-flex align-items-center">
+                    <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2 text-nowrap" data-bs-toggle="collapse" data-bs-target="#sidebarWrapper">
+                        <i class="bi bi-layout-sidebar"></i>
+                        <span>Sidebar</span>
+                    </button>
+                </div>
+                
+                <!-- Center Column: Centered Dashboard Heading -->
+                <div class="col-md-4 col-lg-4 d-flex justify-content-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-cart-plus text-success fs-2"></i>
+                        <h1 class="mb-0 text-nowrap fw-bold">View Bill</h1>
+                    </div>
+                </div>
+                        
+                
+            </div>
+        </div>	
+
+
+        <!-- Error Message -->
+        <div class="container mt-3">
+            <div th:if="${invoiceError}" 
+                class="alert alert-danger fade show mb-3 d-flex align-items-center" 
+                style="background-color: #fff5f5; border: none; border-left: 5px solid #dc3545; color: #b02a37; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
+                role="alert">
+                
+                <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
+                <span th:text="${invoiceError}" class="fw-medium">Error text here</span>
+                
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div class="container mt-3">
+            <div th:if="${invoiceSuccess}" 
+                class="alert alert-success fade show mb-3 d-flex align-items-center" 
+                style="background-color: #f0fdf4; border: none; border-left: 5px solid #198754; color: #146c43; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
+                role="alert">
+                
+                <i class="bi bi-check-circle-fill me-3 fs-5"></i>
+                <span th:text="${invoiceSuccess}" class="fw-medium">Success text here</span>
+                
+            </div>
+        </div>
+
+        
+
+
+        <!-- INVOICE search CARD -->
+        <div class="card rounded-3 shadow-sm border-0" id="invoiceSetupCard" th:classappend="${activeInvoice ==null } ? 'd-flex' : 'd-none '">
+
+
+            <div class="card-body">
+                <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-receipt me-2 text-primary"></i>Invoice Search</h5>
+                <div class="row g-3">                  
+
+                    <!-- Search Existing Invoice -->
+                    <div class="col-md-12">
+
+                        <form th:action="@{/cashier/viewBill}" method="GET">
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="invoiceId" name="invoiceId" placeholder="Invoice ID (e.g. 1)" step="1" required>
+                                
+                                <button class="btn btn-outline-secondary px-3" type="submit" id="searchInvoiceBtn">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                        
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+
+
+        <!-- INVOICE body CARD -->
+
+        <div class="card rounded-3 shadow-sm border-0 flex-column flex-grow-1"    th:classappend="${activeInvoice ==null } ? 'd-none' : 'd-flex '">
+            <div class="d-flex flex-column flex-grow-1 mb-0" >
+
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-3">
+                    <div class="row align-items-center mb-3">
+                        <div class="col-6">
+                            <h5 class="text-dark fw-bold mb-0">
+                                <i class="bi bi-receipt text-success me-1"></i> Invoice Settlement
+                            </h5>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span th:class="'badge px-3 py-2 fs-7 ' + ${invoice?.invoiceStatus?.colour}"
+                                th:text="${invoice?.invoiceStatus?.value}">
+                                PAYMENT PENDING
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 p-3 bg-light rounded-3 border">
+                        <div class="col-md-4 border-end-md">
+                            <h6 class="text-secondary fw-bold small text-uppercase mb-2">
+                                <i class="bi bi-person-badge-fill me-1"></i> Cashier Session
+                            </h6>
+                            <p class="mb-1 small text-dark">
+                                <strong>Invoice Number:</strong> 
+                                <span class="font-monospace fw-medium" th:text="${invoice?.invoiceNumber}">INV-000033</span>
+                            </p>
+                            <p class="mb-0 small text-dark">
+                                <strong>Active Cashier:</strong> 
+                                <span th:text="${invoice?.cashier != null} ? |${invoice.cashier.username}| : 'Unassigned'">pharma7</span>
+                            </p>
+                        </div>
+
+
+                        <div class="col-md-4 ps-md-4">
+                            <h6 class="text-secondary fw-bold small text-uppercase mb-2">
+                                <i class="bi bi-person-fill me-1"></i> Customer Profile
+                            </h6>
+                            <p class="mb-1 small text-dark">
+                                <strong>Name:</strong> 
+                                <span th:text="${invoice?.customer?.name ?: 'Walk-in Customer'}">Janider Heheh</span>
+                            </p>
+                            <p class="mb-0 small text-dark">
+                                <strong>Contact / ID:</strong> 
+                                <span th:text="${invoice?.customer?.phone ?: 'N/A'}">324234254</span>
+                            </p>
+                        </div>
+
+
+                        <div class="col-md-4 ps-md-4">
+                            <h6 class="text-secondary fw-bold small text-uppercase mb-2">
+                                <i class="bi bi-printer-fill me-1"></i> Document Actions
+                            </h6>
+                            
+                            <div class="vstack gap-2 w-100">
+                                
+                                <form th:action="@{/cashier/viewBill/invoice/print}" method="GET" target="_blank" class="w-100 m-0">
+                                    <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
+
+                                    <button type="submit" 
+                                            th:disabled="${isFormPrintable}"
+                                            class="btn btn-outline-primary w-100 py-2 fw-bold text-uppercase d-flex align-items-center justify-content-center shadow-sm">
+                                        <i class="bi bi-printer me-2"></i> Print Receipt
+                                    </button>
+                                </form>
+
+                                <form th:action="@{/cashier/viewBill/invoice/discard}" method="POST" class="w-100 m-0">
+                                    <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
+
+                                    <button type="submit" 
+                                            th:disabled="!${isFormPrintable}"
+                                            class="btn btn-outline-danger w-100 py-2 fw-bold text-uppercase d-flex align-items-center justify-content-center shadow-sm">
+                                        <i class="bi bi-trash me-2"></i> Discard Invoice
+                                    </button>
+                                </form>
+                                
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+
+                <div class="card-body bg-light border-top p-4">
+                    <form th:action="@{/cashier/viewBill/invoice/complete}" method="POST"   class="row gx-4 align-items-end">
+                        
+                        <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
+                        
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="card border-0 p-3 bg-white rounded shadow-sm">
+                                <h6 class="text-secondary fw-bold small text-uppercase mb-3">Payment Execution</h6>
+                                
+                                <div class="mb-3">
+                                    <label for="paymentMethod" class="form-label small fw-medium text-muted mb-1">Payment Mode</label>
+                                    <select name="paymentMethod" id="paymentMethod" class="form-select font-monospace" th:disabled="${isFormDisabled}" required>
+                                        <option value="" selected disabled>-- Select payment option --</option>
+                                        <option th:each="po : ${paymentOptions}" th:value="${po}" th:selected="${po == invoice?.paymentMethod}">[[${po.getValue()}]]</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="amountPaid" class="form-label small fw-medium text-muted mb-1">Amount Received</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light font-monospace text-muted" style="font-size: 13px;">Rs.</span>
+                                        <input type="number" step="0.01" name="amountPaid" id="amountPaid" class="form-control font-monospace" th:placeholder="${invoice?.grandTotal}"  th:value="${invoice?.amountReceived}" th:disabled="${isFormDisabled}" required />
+                                    </div>
+                                </div>
+
+                                <div class="p-3 bg-light rounded border border-dashed text-center">
+                                    <span class="text-muted small d-block fw-medium text-uppercase mb-1">Change to Return</span>
+                                    <span class="fw-bold fs-4 text-dark font-monospace" id="changeReturned" name="changeReturned" th:text="|Rs. ${invoice?.changeReturned ?: '0.00'}|">Rs. 0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-between mb-2 px-1">
+                                <span class="text-muted fw-medium small">Subtotal</span>
+                                <strong id="summarySubtotal" class="fs-6 font-monospace">Rs. [[${invoice?.subTotal}]]</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 px-1">
+                                <span class="text-muted fw-medium small">Discount</span>
+                                <strong class="text-danger font-monospace" id="summaryDiscount">-Rs. [[${invoice?.discountAmount}]]</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3 px-1">
+                                <span class="text-muted fw-medium small">VAT</span>
+                                <strong id="summaryVat" class="fs-6 font-monospace">Rs. [[${invoice?.vatAmount}]]</strong>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between border-top pt-3 p-3 bg-white rounded shadow-sm mt-1 mb-3">
+                                <span class="fw-bold fs-5 text-dark">Grand Total</span>
+                                <span class="fw-bold fs-4 text-success font-monospace" id="summaryGrandTotal">Rs. [[${invoice?.grandTotal}]]</span>
+                            </div>
+
+                            <div class="row gx-2">
+                                <div class="col-8">
+                                    <button th:disabled="${isFormDisabled}" type="submit" class="btn btn-success w-100 py-2 fw-bold text-uppercase d-flex align-items-center justify-content-center shadow-sm">
+                                        <i class="bi bi-check-circle-fill me-2"></i> Complete Sale
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <a th:href="@{/cashier/viewBill}" class="btn btn-outline-secondary w-100 py-2 fw-semibold shadow-sm">
+                                        Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    
+    
+    </main>
+
+
+
+</div>
+
+
+
+
+<!-- Footer -->
+<div th:replace="~{footer :: abis-footer}"></div>
+</body>
+</html>

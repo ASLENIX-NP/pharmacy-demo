@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Sale (POS) | ABIS PLUS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<div th:replace="~{header :: abis-navbar}"></div>
+
+<div class="d-flex flex-grow-1">
+    <div id="sidebarWrapper" class="collapse collapse-horizontal show border-end bg-white">
+        <div th:replace="~{pharmacistSidebar :: abis-sidebar(currentPage='newSales')}"></div>
+    </div>
+
+    <main class="flex-grow-1 p-4 bg-light">
+        <button class="btn btn-sm btn-outline-secondary mb-3 d-flex align-items-center gap-2"
+                data-bs-toggle="collapse" data-bs-target="#sidebarWrapper">
+            <i class="bi bi-layout-sidebar"></i>
+            <span>Sidebar</span>
+
+        </button>
+       
+       
+        <div id="invoiceSearchError" class="text-danger small mt-1" th:classappend="${error == null} ? 'd-none'">
+            [[${error}]]
+        </div>
+        <div class="container-fluid p-0">
+            <div class="row g-4">
+
+
+
+
+
+                <!-- LEFT PANEL: Customer & Cart Section -->
+
+                
+                <div class="col-lg-7 col-12 d-flex flex-column gap-3">
+
+                    <!-- INVOICE SETUP CARD -->
+                    <div class="card rounded-3 shadow-sm border-0" id="invoiceSetupCard" th:classappend="${activeInvoice ==null } ? 'd-flex' : 'd-none '">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-receipt me-2 text-primary"></i>Invoice Setup</h5>
+                            <div class="row g-3">
+
+
+                                <!-- Generate New Invoice -->
+                                <div class="col-md-6 border-end">
+                                    <h6 class="text-muted mb-3 small">New Customer / Walk-in</h6>
+                                    
+                                    <form th:action="@{/pharmacist/newSales/invoice/generate}" method="POST">
+                                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold" id="generateInvoiceBtn">
+                                            <i class="bi bi-file-earmark-plus me-1"></i> Generate New Invoice
+                                        </button>
+                                    </form>
+                                </div>
+
+
+
+                                <!-- Search Existing Invoice -->
+                                <div class="col-md-6">
+                                    <h6 class="text-muted mb-3 small">Continue Existing Sale</h6>
+                                    
+                                    <form th:action="@{/pharmacist/newSales/invoice/search}" method="GET">
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="searchInvoiceInput" name="searchInvoiceInput" placeholder="Invoice ID (e.g. 1)" step="1" required>
+                                            
+                                            <button class="btn btn-outline-secondary px-3" type="submit" id="searchInvoiceBtn">
+                                                <i class="bi bi-search"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                    
+                                    <div id="invoiceSearchError" class="text-danger small mt-1" 
+                                        th:classappend="${searchError == null} ? 'd-none'">
+                                        [[${searchError}]]
+                                    </div>
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CUSTOMER & SALES SECTION (Hidden until invoice is created/found) -->
+                    <div id="activeSaleSection" class=" flex-column gap-3 flex-grow-1" th:classappend="${activeInvoice ==null } ? 'd-none' : 'd-flex'">
+                        
+
+                        <!-- Error Message -->
+                        <div class="container mt-3">
+                            <div th:if="${invoiceError}" 
+                                class="alert alert-danger fade show mb-3 d-flex align-items-center" 
+                                style="background-color: #fff5f5; border: none; border-left: 5px solid #dc3545; color: #b02a37; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
+                                role="alert">
+                                
+                                <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
+                                <span th:text="${invoiceError}" class="fw-medium">Error text here</span>
+                                
+                            </div>
+                        </div>
+
+                        <!-- Success Message -->
+                        <div class="container mt-3">
+                            <div th:if="${invoiceSuccess}" 
+                                class="alert alert-success fade show mb-3 d-flex align-items-center" 
+                                style="background-color: #f0fdf4; border: none; border-left: 5px solid #198754; color: #146c43; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
+                                role="alert">
+                                
+                                <i class="bi bi-check-circle-fill me-3 fs-5"></i>
+                                <span th:text="${invoiceSuccess}" class="fw-medium">Success text here</span>
+                                
+                            </div>
+                        </div>
+                                                
+                        
+                        
+                        <!-- Active Invoice Badge -->
+                        <div class="alert alert-info alert-dismissible fade show mb-0 d-flex align-items-center justify-content-between" role="alert">
+                            <div>
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Active Invoice:</strong> <span id="displayInvoiceId" th:text="${invoice?.invoiceNumber}" class="fw-bold"></span>
+                            </div>
+                            <div>
+                                <form th:action="@{/pharmacist/newSales/invoice/cancel}" th:method="patch" style="display: inline;">
+                                    <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
+                                    <button type="submit" class="btn btn-danger" id="cancelInvoiceBtn" aria-label="Cancel">Cancel Invoice</button>                            
+                                </form>
+                            </div>
+                             
+                        </div>
+
+                        <!-- SECTION 1: Customer Information Card -->
+                        <div class="card rounded-3 shadow-sm border-0">
+                            <div class="card-body">
+                                <h6 class="text-muted fw-bold mb-3 small">CUSTOMER DETAILS</h6>
+
+                                <!-- State A: Walk-In (No Customer Linked) -->
+                                <div th:if="${invoice?.customer == null}" class="row g-3 align-items-center">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center text-secondary">
+                                            <i class="bi bi-person-dash fs-4 me-2"></i>
+                                            <span class="fw-semibold">Walk-In Customer</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 text-md-end">
+                                        <button type="button" class="btn btn-sm btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#customerModal">
+                                            <i class="bi bi-person-plus"></i> Add New
+                                        </button>
+                                        
+                                        <div class="d-inline-block" style="width: 200px;">
+                                            <form th:action="@{/pharmacist/newSales/customer/search}"  method="GET">
+                                                <div class="input-group input-group-sm">
+                                                    
+                                                    <input type="hidden" id="invoiceId" name="invoiceId"  th:value="${invoice != null ? invoice.id : ''}">
+                                                    
+                                                    <input type="text" 
+                                                        id="customerId" 
+                                                        name="customerId" 
+                                                        class="form-control" 
+                                                        placeholder="Search ID...">
+                                                        
+                                                    <button class="btn btn-primary" type="submit">
+                                                        <i class="bi bi-search"></i>
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- State B: Linked Customer -->
+                                <div th:if="${invoice?.customer != null}" class="row g-3">
+                                    <div class="col-12 d-flex justify-content-between align-items-start gap-3">
+                                        <div class="min-width-0 flex-grow-1">
+                                            <h6 class="mb-1 fw-bold text-primary d-flex align-items-center">
+                                                <i class="bi bi-person-check-fill me-2 flex-shrink-0"></i>
+                                                <span class="text-truncate" th:text="${invoice.customer.name}">Customer Name</span>
+                                                <span class="badge bg-secondary ms-2 flex-shrink-0" th:text="'ID: ' + ${invoice.customer.id}">ID: 0</span>
+                                            </h6>
+                                            <div class="small text-muted mb-2 text-truncate">
+                                                <span class="me-3 d-inline-block"><i class="bi bi-telephone-fill me-1"></i> <span th:text="${invoice.customer.phone}">1234567890</span></span>
+                                                <span class="me-3 d-inline-block" th:if="${invoice.customer.panNumber}"><i class="bi bi-card-text me-1"></i> PAN: <span th:text="${invoice.customer.panNumber}">PAN</span></span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex-shrink-0 ms-auto">
+                                            <button type="button" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#editCustomerModal">
+                                                <i class="bi bi-pencil-square"></i> Edit Profile 
+                                            </button>
+                                            <form th:action="@{/pharmacist/newSales/customer/disconnect}" th:method="patch" class="d-flex">
+                                                <input type="hidden" id="invoiceId" name="invoiceId" th:value="${invoice?.id}" />
+                                                
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-x-circle"></i> Disconnect
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <!-- Medical Notes Alert (Only shown if notes exist) -->
+                                    <div class="col-12 mt-2" th:if="${not #strings.isEmpty(invoice.customer.medicalHistoryNotes)}">
+                                        <div class="alert alert-warning py-2 mb-0 small d-flex align-items-center">
+                                            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                                            <div>
+                                                <strong>Medical Alert:</strong>
+                                                <span th:text="${invoice.customer.medicalHistoryNotes}">Medical notes context</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2: Current Sale Cart -->
+                        <div class="card rounded-3 shadow-sm border-0 d-flex flex-column flex-grow-1">
+                            <!-- Cart Table -->
+                            <div class="table-responsive flex-grow-1 bg-white" style="min-height: 250px;">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light sticky-top shadow-sm">
+                                        <tr>
+                                            <th class="ps-3 text-secondary text-uppercase small">Medicine</th>
+                                            <th class="text-center text-secondary text-uppercase small">Qty</th>
+                                            <th class="text-end text-secondary text-uppercase small">Unit Price</th>
+                                            <th class="text-end pe-3 text-secondary text-uppercase small">Discount</th>
+                                            <th class="text-end pe-3 text-secondary text-uppercase small">VAT</th>   
+                                            <th class="text-end pe-3 text-secondary text-uppercase small">Total</th>
+                                            <th class="text-center text-secondary text-uppercase small">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cartTableBody">
+                                        <!-- Empty Cart State -->
+                                        <tr id="cartEmptyState" th:classappend="${isCartEmpty} ? '' : 'd-none'">
+                                            <td colspan="6" class="text-center py-5 text-muted border-bottom-0">
+                                                <i class="bi bi-cart-x display-4 text-light opacity-50 mb-3 d-block"></i>
+                                                <p class="mb-0 fw-medium">No medicines added yet.</p>
+                                                <small class="text-secondary">Search and add medicines from the left panel</small>
+                                            </td>
+                                        </tr>
+
+                                        <tr th:each="item : ${invoice?.invoiceItemList}">
+        
+                                            <td class="ps-3">
+                                                <div class="fw-medium text-dark" th:text="${item.product.genericName}"></div>
+                                                <small class="text-muted" th:text="${item.product.name}"></small>
+                                                <code class="text-secondary" th:text="${item.batch.batchNumber}"></code>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <span class="badge bg-light text-dark border px-2 py-1" th:text="${item.quantity}"></span>
+                                            </td>
+                                            
+                                            <td class="text-end">
+                                                <span th:text="${#numbers.formatDecimal(item.unitPrice, 1, 2)}"></span>
+                                            </td>
+                                            <td class="text-end">
+                                                <span th:text="${#numbers.formatDecimal(item.discountAmount, 1, 2)}"></span>
+                                            </td>
+
+                                            <td class="text-end">
+                                                <span th:text="${#numbers.formatDecimal(item.vatAmount, 1, 2)}"></span>
+                                            </td>
+                                            
+                                            <td class="text-end pe-3 fw-bold text-dark">
+                                                <span th:text="${#numbers.formatDecimal(item.lineTotal, 1, 2)}"></span>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <form th:action="@{/pharmacist/newSales/invoice/remove}" method="post" class="d-inline">
+                                                    <input type="hidden" name="invoiceId" th:value="${invoice.id}" />
+                                                    <input type="hidden" name="itemId" th:value="${item.id}" />
+                                                    
+                                                    <button type="submit" class="btn btn-link text-danger p-0 border-0" title="Remove Item">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                            
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Checkout Summary Footer -->
+                            <div class="card-footer bg-light border-top p-4">
+                                <div class="row mb-3 gx-4">
+                                    <div class="col-sm-6 offset-sm-6">
+                                        <!-- Summary Items -->
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted fw-medium small">Subtotal</span>
+                                            <strong id="summarySubtotal" class="fs-6">Rs. [[${invoice?.subTotal}]]</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="text-muted fw-medium small">Discount</span>
+                                            <strong class="text-danger" id="summaryDiscount">Rs. [[${invoice?.discountAmount}]]</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <span class="text-muted fw-medium small">VAT </span>
+                                            <strong id="summaryVat" class="fs-6">Rs. [[${invoice?.vatAmount}]]</strong>
+                                        </div>
+                                        <!-- Grand Total -->
+                                        <div class="d-flex justify-content-between border-top pt-3 p-3 bg-white rounded shadow-sm mt-1">
+                                            <span class="fw-bold fs-5 text-dark">Grand Total</span>
+                                            <span class="fw-bold fs-4 text-success" id="summaryGrandTotal">Rs. [[${invoice?.grandTotal}]]</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="row g-2 mt-3">
+                                    <div class="col-12 col-md-4">
+                                        <form th:action="@{/pharmacist/newSales/invoice/clear}" th:method="patch">
+                                            <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
+
+                                            <button type="submit" class="btn btn-outline-danger w-100 py-3 shadow-sm fw-bold d-flex align-items-center justify-content-center gap-2" id="clearCartBtn">
+                                                <i class="bi bi-trash"></i>
+                                                <span class="d-sm-inline">Clear Item List </span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                                                        
+                                    <div class="col-12 col-md-4">
+                                        <form action="/pharmacist/newSales/invoice/checkout" method="POST" id="checkoutForm">
+                                            <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
+
+                                            <button type="submit" class="btn btn-success w-100 py-3 shadow-sm fw-bold d-flex align-items-center justify-content-center gap-2" id="checkoutBtn">
+                                                <i class="bi bi-credit-card"></i>
+                                                <span>Checkout</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- RIGHT PANEL: Medicine Search Section -->
+                <div class="col-lg-5 col-12">
+                    <div class="card rounded-3 shadow-sm h-100 border-0">
+                        <!-- Card Header -->
+                        <div class="card-header bg-white border-bottom pt-3 pb-2 d-flex align-items-center gap-2">
+                            <i class="bi bi-cart-plus fs-4 text-success"></i>
+                            <h5 class="mb-0 fw-bold text-dark">New Sale (POS)</h5>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="card-body d-flex flex-column pt-3">
+                            <!-- Search Input -->
+                            <form id="medSearchForm" th:action="@{/pharmacist/newSales/product/find}" method="get" class="mb-0">
+                                <div class="input-group input-group-lg mb-3 shadow-sm rounded-3">
+                                    <input th:if="${invoice != null}" type="hidden" name="invoiceId" th:value="${invoice.id}" />
+                                    <input type="text" id="query" name="query" class="form-control fs-6 border-end-0" 
+                                           placeholder="Search medicine by name" autocomplete="off">
+                                    <button class="btn btn-success border-start-0 px-4" type="submit" id="searchBtn">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Search Results Area -->
+                            <div class="flex-grow-1 position-relative rounded border bg-white">
+
+                                <div id="searchResults" class="table-responsive" style="max-height: 500px; overflow-y: auto; overflow-x: hidden;">
+                                    <table class="table table-hover align-middle mb-0">
+                                        
+                                        <thead class="table-light sticky-top shadow-sm" style="top: 0; z-index: 2;">
+                                            <tr>
+                                                <th class="ps-3 text-secondary text-uppercase small">Medicine</th>
+                                                <th class="text-center text-secondary text-uppercase small">Stock</th>
+                                                <th class="text-end text-secondary text-uppercase small">Price</th>
+                                                <th class="text-center text-secondary text-uppercase small">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="searchResultsBody">
+                                           <tr th:each="ib : ${inventoryBatch}">
+    
+                                                <td class="ps-2">
+                                                    <div class="fw-medium text-dark" th:text="${ib.product.genericName}"></div>
+                                                    <small class="text-muted" th:text="${ib.product.name}"></small><br>
+                                                    <span class="badge bg-info text-white" th:text="${ib.batchNumber}"></span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge px-2 py-1"
+                                                        th:classappend="${ib.currentStock < ib.product.minStockLevel} ? 'bg-danger bg-opacity-10 text-danger' : 'bg-success bg-opacity-10 text-success'"
+                                                        th:text="${ib.currentStock + ' units'}">
+                                                    </span>
+                                                </td>
+
+                                            
+
+                                                <td class="text-end fw-bold text-dark ps-2">
+                                                    Rs. <span th:text="${ib.sellingPrice}"></span>
+                                                </td>
+
+                                                <td>
+                                                    <form th:action="@{/pharmacist/newSales/invoice/add}" method="post"  style="display:inline;">
+                                                        <input type="hidden" name="batchId" th:value="${ib.id}" required />
+                                                        <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
+
+
+                                                           <input type="number"
+                                                                name="quantity"
+                                                                th:value="1"
+                                                                min="1"
+                                                                step="1"
+                                                                th:attr="max=${ib.currentStock}"
+                                                                class="form-control form-control-sm d-inline-block"
+                                                                style="width: 80px;" required/> 
+
+                                                        
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            Add
+                                                        </button>
+                                                    </form>
+                                                </td>
+
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+               
+            </div>
+        </div>
+    </main>
+</div>
+
+
+
+
+<!-- Add/Edit Quantity Modal -->
+<div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow rounded-4 border-0">
+            <div class="modal-header bg-success bg-opacity-10 border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-success" id="addToCartModalLabel"><i class="bi bi-plus-circle me-2"></i>Select Quantity</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-3 pb-4">
+                <div class="d-flex justify-content-between align-items-start mb-3 bg-light rounded p-3 border">
+                    <div>
+                        <h5 class="mb-1 fw-bold text-dark" id="modalMedicineName">Medicine Name</h5>
+                        <p class="mb-0 text-muted small"><i class="bi bi-box-seam me-1"></i>Batch: <span id="modalBatchId">B-00</span></p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 fs-6 shadow-sm">
+                            Stock: <span id="modalAvailableStock">0</span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label for="modalQuantity" class="form-label fw-bold text-secondary">Quantity to Add/Update</label>
+                    <div class="input-group input-group-lg shadow-sm rounded">
+                        <button class="btn btn-outline-secondary border-end-0 fw-bold px-3" type="button" onclick="document.getElementById('modalQuantity').stepDown()">-</button>
+                        <input type="number" class="form-control text-center fw-bold text-primary fs-4" id="modalQuantity" value="1"  step="1" min="1">
+                        <button class="btn btn-outline-secondary border-start-0 fw-bold px-3" type="button" onclick="document.getElementById('modalQuantity').stepUp()">+</button>
+                    </div>
+                    <div class="invalid-feedback fw-bold mt-2" id="modalWarningText">
+                        ⚠️ Requested quantity exceeds available stock!
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light border-top-0 pt-2 pb-3 rounded-bottom-4">
+                <button type="button" class="btn btn-light border px-4 shadow-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success px-5 shadow-sm fw-bold" id="confirmAddToCartBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- pop up for adding customer-->
+
+<div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered"> <div class="modal-content">
+            
+            <div class="modal-header">
+                <h5 class="modal-title" id="customerModalLabel">Add New Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form th:action="@{/pharmacist/newSales/customer/add(invoiceId=${invoice?.id})}" method="POST">
+                
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="customerName" class="form-label">Name *</label>
+                        <input type="text" class="form-control" id="customerName" name="name" required placeholder="John Doe">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="customerPhone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" id="customerPhone" name="phone" required placeholder="123-456-7890">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email </label>
+                        <input type="email" class="form-control" id="email" name="email"  placeholder="johndow@web.com">
+                    </div>
+
+                     <div class="mb-3">
+                        <label for="panNumber" class="form-label">PAN Number </label>
+                        <input type="text" class="form-control" id="panNumber" name="panNumber"  placeholder="123123113">
+                    </div>
+                    <div class="mb-3">
+                        <label for="medicalHistoryNotes" class="form-label">Medical History Notes</label>
+                        <textarea class="form-control" 
+                                id="medicalHistoryNotes" 
+                                name="medicalHistoryNotes" 
+                                rows="4" 
+                                placeholder="Enter detailed medical history, previous surgeries, or allergies..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success btn-sm">Save Customer</button>
+                </div>
+            
+                
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- pop up for editing Customer-->
+ <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered"> 
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCustomerModalLabel">Edit Customer Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form th:action="@{/pharmacist/newSales/customer/edit(invoiceId=${invoice?.id})}"  method="POST">
+                
+                <input type="hidden" id="id" name="id" th:value="${invoice?.customer?.id}" />
+                
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" th:value="${invoice?.customer?.name}" required placeholder="John Doe">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" th:value="${invoice?.customer?.phone}" required placeholder="123-456-7890">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email </label>
+                        <input type="email" class="form-control" id="email" name="email" th:value="${invoice?.customer?.email}" placeholder="johndow@web.com">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="panNumber" class="form-label">PAN Number </label>
+                        <input type="text" class="form-control" id="panNumber" name="panNumber" th:value="${invoice?.customer?.panNumber}" placeholder="123123113">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="medicalHistoryNotes" class="form-label">Medical History Notes</label>
+                        <textarea class="form-control" 
+                                  id="medicalHistoryNotes" 
+                                  name="medicalHistoryNotes" 
+                                  rows="4" 
+                                  th:text="${invoice?.customer?.medicalHistoryNotes}"
+                                  placeholder="Enter detailed medical history, previous surgeries, or allergies..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Update Customer</button>
+                </div>
+                
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div th:replace="~{footer :: abis-footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Supplier | ABIS PLUS</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Header -->
+<div th:replace="~{header :: abis-navbar}"></div>
+
+<div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
+    <div id="sidebarWrapper" class="collapse collapse-horizontal show border-end bg-white">
+        <div th:replace="~{adminSidebar :: abis-sidebar}"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1 p-4">
+        <button class="btn btn-sm btn-outline-secondary mb-3 d-flex align-items-center gap-2"
+                data-bs-toggle="collapse" data-bs-target="#sidebarWrapper">
+            <i class="bi bi-layout-sidebar"></i>
+            <span>Sidebar</span>
+        </button>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <!-- Form Card -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-success text-white border-0">
+                            <h4 class="mb-0">
+                                <i class="bi bi-person-plus me-2"></i>Add New Supplier
+                            </h4>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <!-- Display any error messages -->
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-circle me-2"></i>
+                                <strong>Error!</strong> <span th:text="${error}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+
+                            <!-- Display any success messages -->
+                            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle me-2"></i>
+                                <strong>Success!</strong> <span th:text="${success}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+
+                            <form th:action="@{/admin/supplier/add}" method="post" class="needs-validation" novalidate>
+
+
+                                <!-- First Name  Row -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="supplierName" class="form-label fw-semibold">Supplier Name *</label>
+                                        <input type="text" class="form-control" id="supplierName" name="supplierName"
+                                               placeholder="Enter Supplier Name"  required>
+                                        <div class="invalid-feedback">
+                                            Supplier Name is required.
+                                        </div>
+                                    </div>
+                                    <!-- Last Name Row -->
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="companyName" class="form-label fw-semibold">Company Name *</label>
+                                        <input type="text" class="form-control" id="companyName" name="companyName"
+                                               placeholder="Enter Company Name"  required>
+                                        <div class="invalid-feedback">
+                                            Company Name is required.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- phone -->
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label fw-semibold">Phone Number *</label>
+                                    <input type="text" class="form-control" id="phone" name="phone"
+                                           placeholder="Enter phone number" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid phone number.
+                                    </div>
+                                </div>
+
+                                <!-- panVatNumber -->
+                                <div class="mb-3">
+                                    <label for="panVatNumber" class="form-label fw-semibold">PAN VAT Number *</label>
+                                    <input type="text" class="form-control" id="panVatNumber" name="panVatNumber"
+                                           placeholder="Enter PAN VAT Number" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid PAN VAT Number
+                                    </div>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-semibold">Email Address *</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                           placeholder="Enter email address" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid email address.
+                                    </div>
+                                </div>
+
+                                <!-- address  -->
+                                <div class="mb-3">
+                                    <label for="address" class="form-label fw-semibold">Address  *</label>
+                                    <input type="text" class="form-control" id="address" name="address"
+                                           placeholder="Enter address" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a valid address.
+                                    </div>
+                                </div>
+
+                                <!-- supplier status Selection -->
+                                <div class="mb-3">
+                                    <label for="supplierStatus" class="form-label fw-semibold">supplier Status *</label>
+                                    <select class="form-select" id="supplierStatus" name="supplierStatus"    required>
+                                        <option value="" selected disabled>-- Select a status --</option>
+                                        <option th:each="ss:${supplierStatus}" th:value = "${ss}" >[[${ss.getValue()}]]</option>
+
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a status.
+                                    </div>
+                                </div>
+
+
+                                <!-- Buttons -->
+                                <div class="d-grid gap-2 d-sm-flex justify-content-sm-between">
+                                    <a th:href="@{/admin/logistics}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left me-2"></i>Back to Logistics
+                                    </a>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="bi bi-check-circle me-2"></i>Add Supplier
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Help Text -->
+                    <div class="alert alert-info mt-4 border-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Note:</strong> All fields marked with * are required.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{footer :: abis-footer}"></div>
+
+<!-- Form Validation Script -->
+<script>
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            let forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
+
+</body>
+</html>
