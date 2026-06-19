@@ -11,6 +11,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class AdminDashboardStatsImpl implements SchedulableTask {
 
@@ -27,6 +29,24 @@ public class AdminDashboardStatsImpl implements SchedulableTask {
 
     @Override
     public void execute() {
+
+        LocalDate now = LocalDate.now();
+
+        int year = now.getYear();
+
+        AdminDashboardStats adminDashboardStats = adminDashboardStatsRepository.findByYearAndMonth(year,month);
+
+
+
+
+
+
+
+        Long total ;
+
+        adminDashboardStats.setThisMonthSales(total);
+
+        adminDashboardStatsRepository.save(adminDashboardStats);
 
     }
 }

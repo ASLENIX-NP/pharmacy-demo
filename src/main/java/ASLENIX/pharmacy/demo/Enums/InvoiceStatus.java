@@ -17,6 +17,8 @@ public enum InvoiceStatus {
     InvoiceStatus(String value, String colour) {
         this.value = value;
         this.colour = colour;
+
+
     }
 
 }
