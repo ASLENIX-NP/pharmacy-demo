@@ -5,6 +5,7 @@ import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.beans.Transient;
@@ -85,8 +86,7 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public List<Supplier> getAllSupplier() {
-        return supplierRepository.findAll();
-    }
+        return supplierRepository.findAll(Sort.by(Sort.Direction.ASC, "supplierStatus"));    }
 
 
     /*
