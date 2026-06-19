@@ -14,6 +14,11 @@ public interface InvoiceRepository extends JpaRepository<Invoice , Long> {
     @Query("SELECT i FROM Invoice i WHERE i.transactionDate BETWEEN :start AND :end AND i.invoiceStatus != InvoiceStatus.CANCELED")
     List<Invoice> findActiveInvoicesByDateRange(@Param("start") LocalDate startDate, @Param("end") LocalDate endDate);
 
+
+    @Query("SELECT i FROM Invoice i WHERE i.transactionDate BETWEEN :start AND :end AND i.invoiceStatus !=  InvoiceStatus.COMPLETE")
+    List<Invoice> findCompleteInvoicesByDateRange(@Param("start") LocalDate startDate, @Param("end") LocalDate endDate);
+
+
     @Query("SELECT COUNT(i) FROM Invoice i " +
             "WHERE i.pharmacist.id = :pharmacistId " +
             "AND i.transactionDate = :transactionDate " +
