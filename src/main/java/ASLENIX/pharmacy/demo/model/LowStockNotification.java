@@ -14,8 +14,8 @@ public class LowStockNotification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
 
-    @OneToOne
-    private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)    private Product product;
 
     private Long totalStocks;
 

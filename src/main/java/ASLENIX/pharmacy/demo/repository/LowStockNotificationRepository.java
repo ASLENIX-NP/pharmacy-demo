@@ -10,4 +10,6 @@ public interface LowStockNotificationRepository extends JpaRepository<LowStockNo
     // Used by dashboards to display active tasks
     List<LowStockNotification> findByIsInternalLowStockTrueAndActionTakenFalse();  // Storekeeper items
     List<LowStockNotification> findByIsInternalLowStockFalseAndActionTakenFalse(); // Admin items
+
+    List<LowStockNotification> findByActionTakenFalse();
 }

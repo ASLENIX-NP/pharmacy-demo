@@ -5,14 +5,18 @@ import ASLENIX.pharmacy.demo.model.InventoryBatch;
 import ASLENIX.pharmacy.demo.model.LowStockNotification;
 import ASLENIX.pharmacy.demo.model.Product;
 import ASLENIX.pharmacy.demo.repository.InventoryBatchRepository;
+import ASLENIX.pharmacy.demo.repository.LowStockNotificationRepository;
 import ASLENIX.pharmacy.demo.repository.ProductRepository;
 import ASLENIX.pharmacy.demo.services.SchedulableTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.management.Notification;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class LowStockTaskImpl implements SchedulableTask {
@@ -23,12 +27,14 @@ public class LowStockTaskImpl implements SchedulableTask {
     @Autowired
     private InventoryBatchRepository inventoryBatchRepository;
 
+    @Autowired
+    private LowStockNotificationRepository lowStockNotificationRepository;
+
 
     @Override
     public JobType getJobName() {
         return JobType.LOW_STOCK_CHECKER;
     }
-
 
 
     HashMap<Long,Product> mapProductIdToProduct(){
@@ -87,55 +93,66 @@ public class LowStockTaskImpl implements SchedulableTask {
 
 
 
-
-
-
-
-
-
-
-
     @Override
-    public void execute() {
+    public void execute()   {HashMap<Long, Product> productIdToProduct = mapProductIdToProduct();
+        HashMap<Long, Long> productIdToCurrentStocks = mapProductIdToCurrentStocks();
+        HashMap<Long, Long> productIdToBackRoomStocks = mapProductIdToStorageStocks();
 
-        HashMap<Long,Product> productIdToProduct = mapProductIdToProduct();
+// 1. Fetch ALL active notifications in the system with a single query
+        List<LowStockNotification> existingNotifications = lowStockNotificationRepository.findByActionTakenFalse();
 
-        HashMap<Long,Long> productIdToCurrentStocks = mapProductIdToCurrentStocks();
-        HashMap<Long,Long> productIdToBackRoomStocks = mapProductIdToStorageStocks();
-
-
-
-
-
-        HashMap<Long , Boolean> productIdToForAdmin = new HashMap<>();
+// 2. Map them by Product ID in memory for O(1) lookups
+        Map<Long, LowStockNotification> productToNotificationMap = existingNotifications.stream()
+                .filter(lsn -> lsn.getProduct() != null) // Safety check to avoid NullPointerException
+                .collect(Collectors.toMap(
+                        lsn -> lsn.getProduct().getId(),
+                        lsn -> lsn,
+                        (existing, replacement) -> existing // Merge function: keep the first one if duplicates somehow exist
+                ));
 
         List<LowStockNotification> saveNotification = new LinkedList<>();
 
-        for (Long productId : productIdToCurrentStocks.keySet()){
-            Long minStock  = productIdToProduct.get(productId).getMinStockLevel();
+// 3. Iterate through your master product list
+        for (Map.Entry<Long, Product> entry : productIdToProduct.entrySet()) {
+            Long productId = entry.getKey();
+            Product product = entry.getValue();
+            if (product == null) continue;
 
-            Long activeQty = productIdToCurrentStocks.get(productId);
-            if( activeQty < minStock){
-                productIdToForAdmin.put(productId,true);
+            long minStock = product.getMinStockLevel();
+            long currentStock = productIdToCurrentStocks.getOrDefault(productId, 0L);
+            long backRoomStock = productIdToBackRoomStocks.getOrDefault(productId, 0L);
+            long totalStock = currentStock + backRoomStock;
+
+            boolean isCurrentLow = currentStock < minStock;
+            boolean isTotalLow = totalStock < minStock;
+
+            if (isCurrentLow || isTotalLow) {
+
+                // 4. O(1) memory lookup from our pre-fetched map
+                LowStockNotification lsn = productToNotificationMap.get(productId);
+
+                if (lsn == null) {
+                    // No active notification exists yet; instantiate a new record
+                    lsn = new LowStockNotification();
+                    lsn.setProduct(product);
+                    lsn.setActionTaken(false);
+                }
+
+                // 5. Apply business logic updates
+                if (isTotalLow) {
+                    lsn.setTotalStocks(totalStock);
+                    lsn.setInternalLowStock(false); // Global alert takes precedence
+                } else {
+                    lsn.setTotalStocks(currentStock);
+                    lsn.setInternalLowStock(true);  // Storekeeper specific alert
+                }
+
+                saveNotification.add(lsn);
             }
         }
 
-        for (Long productId : productIdToBackRoomStocks.keySet()){
-            Long minStock  = productIdToProduct.get(productId).getMinStockLevel();
-
-        }
-
-
-
-
-
-
-
-
-
-
-
-
+// 6. Perform a highly efficient transactional batch save/update
+        lowStockNotificationRepository.saveAll(saveNotification);
 
     }
 }
