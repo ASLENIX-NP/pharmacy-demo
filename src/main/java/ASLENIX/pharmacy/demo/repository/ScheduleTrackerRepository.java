@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface ScheduleTrackerRepository extends JpaRepository<ScheduleTracker , UUID> {
-    ScheduleTracker findByJobType(JobType jobTypes);
+    ScheduleTracker findByJobType(JobType jobType);
 
 
 }
