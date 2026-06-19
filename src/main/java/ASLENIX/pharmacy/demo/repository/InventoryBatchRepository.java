@@ -29,5 +29,10 @@ public interface InventoryBatchRepository extends JpaRepository<InventoryBatch, 
             "AND ib.storageZone = StorageZone.MAIN_RACK")
     List<InventoryBatch> findApprovedMainRackBatches();
 
+    @Query("SELECT ib FROM InventoryBatch ib " +
+            "WHERE ib.batchApprovalStatus = BatchApprovalStatus.APPROVED " +
+            "AND ib.storageZone = StorageZone.BACKROOM_STOCK")
+    List<InventoryBatch> findApprovedBackRoomStockBatches();
+
 
 }

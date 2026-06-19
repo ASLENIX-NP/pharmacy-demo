@@ -28,7 +28,7 @@ public class Product {
     private Category category;
 
     private String rackLocation;
-    private  int minStockLevel;
+    private  Long minStockLevel;
 
     private Double discountPercentage;
 
