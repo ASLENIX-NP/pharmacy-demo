@@ -26,9 +26,6 @@ public class LowStockTaskImpl implements SchedulableTask {
         return JobType.LOW_STOCK_CHECKER;
     }
 
-    HashMap<Long,Integer> productIdToMinStocks= new HashMap<>();
-
-    List<Product> productList = productRepository.findAll();
 
 
 

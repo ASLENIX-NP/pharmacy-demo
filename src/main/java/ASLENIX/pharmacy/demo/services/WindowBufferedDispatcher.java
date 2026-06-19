@@ -61,7 +61,7 @@ public class WindowBufferedDispatcher {
         LocalDateTime cycleCutoff = LocalDateTime.now().minusHours(23);
         ScheduleTracker scheduleTracker = scheduleTrackerRepository.findByJobType(jobType);
 
-        switch (scheduleTracker.getJobTypes()){
+        switch (scheduleTracker.getJobType()){
 
             case EXPIRY_CHECKER-> {
                 ExpiryCheckTaskImpl expiryCheckTask = new ExpiryCheckTaskImpl();
@@ -73,6 +73,7 @@ public class WindowBufferedDispatcher {
                 lowStockTask.execute();
 
             }
+
 
                 default -> {
                 return;

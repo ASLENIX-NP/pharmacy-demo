@@ -19,7 +19,7 @@ public class ScheduleTracker {
 
     @Column( nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private JobType jobTypes;
+    private JobType jobType;
 
 
     @Column( nullable = false)
