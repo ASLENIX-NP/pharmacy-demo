@@ -22,6 +22,6 @@ public class AdminDashboardStats {
 
      private LocalDate LastUpdated;
 
-     private Long thisMonthSales;
+     private Double thisMonthSales;
 
 }
