@@ -51,7 +51,7 @@ public class AdminDashboardStatsImpl implements SchedulableTask {
         if (monthlyInvoices != null && !monthlyInvoices.isEmpty()) {
             for (Invoice invoice : monthlyInvoices) {
                 if (invoice.getGrandTotal() != null) {
-                    total += invoice.getGrandTotal().longValue();
+                    total += invoice.getGrandTotal();
                 }
             }
         }
