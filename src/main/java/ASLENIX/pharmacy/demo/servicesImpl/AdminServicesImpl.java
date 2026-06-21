@@ -113,7 +113,7 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public List<PurchaseOrder> getAllPurchaseOrder() {
-        return purchaseOrderRepository.findAll();
+        return purchaseOrderRepository.findAll(Sort.by(Sort.Direction.ASC,"paymentStatus"));
     }
 
     /*
