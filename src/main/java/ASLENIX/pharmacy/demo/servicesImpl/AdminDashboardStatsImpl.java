@@ -45,19 +45,11 @@ public class AdminDashboardStatsImpl implements SchedulableTask {
         LocalDate startDate = now.withDayOfMonth(1);
         LocalDate endDate = now.withDayOfMonth(now.getDayOfMonth());
 
-        List<Invoice> monthlyInvoices = invoiceRepository.findCompleteInvoicesByDateRange(startDate, endDate);
-
-        Double total = 0.0;
-        if (monthlyInvoices != null && !monthlyInvoices.isEmpty()) {
-            for (Invoice invoice : monthlyInvoices) {
-                if (invoice.getGrandTotal() != null) {
-                    total += invoice.getGrandTotal().longValue();
-                }
-            }
-        }
+        Double fetchedTotal = invoiceRepository.sumRevenueBetween(startDate, endDate);
+        Double total = fetchedTotal != null ? fetchedTotal : 0.0;
 
         adminDashboardStats.setThisMonthSales(total);
         adminDashboardStats.setLastUpdated(now);
         adminDashboardStatsRepository.save(adminDashboardStats);
     }
-    }
+}
