@@ -7,11 +7,13 @@ import ASLENIX.pharmacy.demo.repository.InvoiceRepository;
 import ASLENIX.pharmacy.demo.repository.PurchaseOrderRepository;
 import ASLENIX.pharmacy.demo.services.SchedulableTask;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Service
 public class FinanceStatsImpl implements SchedulableTask {
 
     @Autowired
