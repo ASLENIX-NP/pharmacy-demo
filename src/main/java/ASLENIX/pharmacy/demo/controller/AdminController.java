@@ -628,6 +628,20 @@ public class AdminController {
              return "redirect:/login";
          }
         model.addAttribute("currentPage", "financials");
+
+        List<PurchaseOrder> purchaseOrders = adminServices.getAllPurchaseOrder();
+        int completedCount = 0;
+        int receivedCount = 0;
+        int dueCount = 0;
+        if (purchaseOrders != null) {
+            for (PurchaseOrder po : purchaseOrders) {
+                if (po.getPaymentStatus() == PaymentStatus.COMPLETE) completedCount++;
+                else if (po.getPaymentStatus() == PaymentStatus.RECEIVED) receivedCount++;
+                else if (po.getPaymentStatus() == PaymentStatus.DUE) dueCount++;
+            }
+        }
+        model.addAttribute("poStatusData", java.util.Arrays.asList(completedCount, receivedCount, dueCount));
+
         return "adminFinancials";
     }
 
