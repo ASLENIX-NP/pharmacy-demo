@@ -21,6 +21,23 @@ public interface AdminServices {
     List<User> getAllUsers();
 
 
+     /*
+==============================================================
+                dashboard
+====================================================
+
+ */
+
+    Double getTotalSalesThisMonth();
+
+    List<ExpiryDateNotification> getExpiryDateNotification();
+
+    List<LowStockNotification> getLowStockNotification();
+
+    Integer countPendingOrder ();
+
+
+
     /*
 ==============================================================
                 supplier
