@@ -8,9 +8,11 @@ import java.util.UUID;
 
 public interface AdminDashboardStatsRepository extends JpaRepository<AdminDashboardStats , UUID> {
 
-    // Finds the top (first) record ordered by Year DESC, then Month DESC
-    Optional<AdminDashboardStats> findTopByOrderByYearDescMonthDesc();
+    /** Finds the top (first) record ordered by Year DESC, then Month DESC
+    */
+     Optional<AdminDashboardStats> findTopByOrderByYearDescMonthDesc();
 
-    // Bonus: If you ever need to find stats for a specific month/year
-    Optional<AdminDashboardStats> findByYearAndMonth(Integer year, Integer month);
+    /** find admin dashboard stats for a specific month/year
+    */
+     Optional<AdminDashboardStats> findByYearAndMonth(Integer year, Integer month);
 }

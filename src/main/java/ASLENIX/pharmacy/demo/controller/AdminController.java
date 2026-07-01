@@ -32,6 +32,22 @@ public class AdminController {
          if (session.getAttribute("activeUser") == null) {
              return "redirect:/login";
          }
+
+         Double thisMonthSales= adminServices.getTotalSalesThisMonth();
+         List<LowStockNotification> lowStockNotificationList  =adminServices.getLowStockNotification();
+         List<ExpiryDateNotification> expiryDateNotificationList = adminServices.getExpiryDateNotification();
+
+         Integer countPendingOrder = adminServices.countPendingOrder();
+
+         model.addAttribute("thisMonthSales" , thisMonthSales);
+         model.addAttribute("countLowStock", lowStockNotificationList.size());
+         model.addAttribute("countExpiryDate", expiryDateNotificationList.size());
+         model.addAttribute("countPendingOrder", countPendingOrder);
+
+         model.addAttribute("lowStockNotificationList" , lowStockNotificationList);
+        model.addAttribute("expiryDateNotificationList" ,expiryDateNotificationList);
+
+
         model.addAttribute("currentPage", "overview");
         return "adminDashboard";
     }

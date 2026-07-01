@@ -16,4 +16,7 @@ public interface PurchaseOrderRepository extends JpaRepository<PurchaseOrder , L
     @Query("SELECT SUM(p.grandTotal) FROM PurchaseOrder p WHERE p.receivedDate BETWEEN :start AND :end")
     Double sumPurchasesBetween(@Param("start") LocalDate start, @Param("end") LocalDate end);
 
+    Integer countByPaymentStatus(PaymentStatus paymentStatus);
+
+
 }
