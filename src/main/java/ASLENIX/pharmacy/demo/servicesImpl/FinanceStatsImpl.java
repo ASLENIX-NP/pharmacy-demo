@@ -44,7 +44,14 @@ public class FinanceStatsImpl implements SchedulableTask {
 
         Double netProfit = totalRevenue - totalPurchaseOrder;
 
-        Double profitMargin = (netProfit/ totalRevenue ) *100;
+        Double profitMargin;
+
+        if(totalRevenue == 0){
+            profitMargin = 0.0;
+        }else {
+            profitMargin = (netProfit/ totalRevenue ) *100;
+        }
+
 
         financeStats.setTotalRevenue(totalRevenue);
         financeStats.setPurchaseOrderTotal(totalPurchaseOrder);
@@ -87,8 +94,8 @@ public class FinanceStatsImpl implements SchedulableTask {
 
         if (lastMonthOpt.isEmpty()) {
             FinanceStats tempFinanceStat = new FinanceStats();
-            tempFinanceStat.setYear(todayMonthYear);
-            tempFinanceStat.setMonth(todayMonth);
+            tempFinanceStat.setYear(lastMonthYear);
+            tempFinanceStat.setMonth(lastMonth);
             lastMonthFinanceStat = updateFinanceStats(tempFinanceStat);
 
         } else {
@@ -99,6 +106,8 @@ public class FinanceStatsImpl implements SchedulableTask {
                 lastMonthFinanceStat = updateFinanceStats(lastMonthFinanceStat );
             }
         }
+
+        System.out.println(lastMonthFinanceStat.toString());
 
         Double tempGrowthRate = calculateProRatedGrowthRate(
                 todayFinanceStat.getTotalRevenue() ,
