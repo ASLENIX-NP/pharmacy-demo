@@ -11,7 +11,6 @@ import ASLENIX.pharmacy.demo.services.SchedulableTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.management.Notification;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,15 +54,15 @@ public class LowStockTaskImpl implements SchedulableTask {
         List<InventoryBatch> inventoryBatchList = inventoryBatchRepository.findApprovedMainRackBatches();
 
         for(InventoryBatch inventoryBatch : inventoryBatchList){
-            Long id = inventoryBatch.getId();
+            Long productId = inventoryBatch.getProduct().getId();
             Long newStocks = inventoryBatch.getCurrentStock();
 
-            if(productIdToCurrentStocks.containsKey(id)){
-                Long prevStocks= productIdToCurrentStocks.get(id);
-                productIdToCurrentStocks.put(inventoryBatch.getId() , prevStocks+newStocks );
-            }else {
-                productIdToCurrentStocks.put(id,newStocks);
+            if(productIdToCurrentStocks.containsKey(productId)){
+                newStocks = newStocks + productIdToCurrentStocks.get(productId);
             }
+
+            productIdToCurrentStocks.put(productId,newStocks);
+
         }
 
         return productIdToCurrentStocks;
