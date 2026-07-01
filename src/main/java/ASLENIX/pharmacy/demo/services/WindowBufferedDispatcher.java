@@ -1,9 +1,13 @@
 package ASLENIX.pharmacy.demo.services;
 
 import ASLENIX.pharmacy.demo.Enums.JobType;
+import ASLENIX.pharmacy.demo.model.AdminDashboardStats;
+import ASLENIX.pharmacy.demo.model.FinanceStats;
 import ASLENIX.pharmacy.demo.model.ScheduleTracker;
 import ASLENIX.pharmacy.demo.repository.ScheduleTrackerRepository;
+import ASLENIX.pharmacy.demo.servicesImpl.AdminDashboardStatsImpl;
 import ASLENIX.pharmacy.demo.servicesImpl.ExpiryCheckTaskImpl;
+import ASLENIX.pharmacy.demo.servicesImpl.FinanceStatsImpl;
 import ASLENIX.pharmacy.demo.servicesImpl.LowStockTaskImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,6 +20,18 @@ public class WindowBufferedDispatcher {
 
     @Autowired
     private ScheduleTrackerRepository scheduleTrackerRepository;
+
+    @Autowired
+    private ExpiryCheckTaskImpl expiryCheckTask;
+
+    @Autowired
+    private LowStockTaskImpl lowStockTask;
+
+    @Autowired
+    private AdminDashboardStatsImpl adminDashboardStats;
+
+    @Autowired
+    private FinanceStatsImpl financeStats;
 
     // Fires every 5 minutes. If a target window is open, it goes through.
     // Otherwise, it skips the database completely.
@@ -58,19 +74,70 @@ public class WindowBufferedDispatcher {
     }
 
     private void processJobExecution(JobType jobType) {
-        LocalDateTime cycleCutoff = LocalDateTime.now().minusHours(23);
+
         ScheduleTracker scheduleTracker = scheduleTrackerRepository.findByJobType(jobType);
+
+        LocalDateTime cycleCutoff = LocalDateTime.now().minusHours(scheduleTracker.getThresholdTime());
+
+// Guard Clause: Exit early if the task ran within the threshold time
+        if (scheduleTracker.getLastRunTimestamp().isAfter(cycleCutoff)) {
+            System.out.println(scheduleTracker.getJobType().getValue()+ " ran recently. Skipping execution.");
+            return;
+        }
+
+        System.out.println(scheduleTracker.getJobType().getValue()+ "Threshold exceeded. Running the task....");
+
 
         switch (scheduleTracker.getJobType()){
 
             case EXPIRY_CHECKER-> {
-                ExpiryCheckTaskImpl expiryCheckTask = new ExpiryCheckTaskImpl();
-                expiryCheckTask.execute();
-            }
+                try {
+                    expiryCheckTask.execute();
+
+                    scheduleTracker.setLastRunTimestamp(LocalDateTime.now());
+                    scheduleTrackerRepository.save(scheduleTracker);
+                }catch (RuntimeException e) {
+                    System.err.println("Job failed to execute: " + e.getMessage());
+                }
+           }
 
             case LOW_STOCK_CHECKER ->{
-                LowStockTaskImpl lowStockTask = new LowStockTaskImpl();
-                lowStockTask.execute();
+
+                try {
+                    lowStockTask.execute();
+
+                    scheduleTracker.setLastRunTimestamp(LocalDateTime.now());
+                    scheduleTrackerRepository.save(scheduleTracker);
+                }catch (RuntimeException e) {
+                    System.err.println("Job failed to execute: " + e.getMessage());
+                }
+
+            }
+
+            case ADMIN_DASHBOARD_UPDATER -> {
+
+                try {
+                    adminDashboardStats.execute();
+
+                    scheduleTracker.setLastRunTimestamp(LocalDateTime.now());
+                    scheduleTrackerRepository.save(scheduleTracker);
+                }catch (RuntimeException e) {
+                    System.err.println("Job failed to execute: " + e.getMessage());
+                }
+
+
+            }
+
+            case FINANCE_UPDATED -> {
+
+                try {
+                    financeStats.execute();
+
+                    scheduleTracker.setLastRunTimestamp(LocalDateTime.now());
+                    scheduleTrackerRepository.save(scheduleTracker);
+                }catch (RuntimeException e) {
+                    System.err.println("Job failed to execute: " + e.getMessage());
+                }
 
             }
 
