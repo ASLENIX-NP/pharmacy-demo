@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.ui.Model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -23,5 +25,14 @@ public class AdminDashboardStats {
      private LocalDate lastUpdated;
 
      private Double thisMonthSales;
+
+
+     public void  roundOff(){
+
+         BigDecimal tempRoundOff = new BigDecimal(Double.toString(this.thisMonthSales));
+
+         this.thisMonthSales = tempRoundOff.setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+     }
 
 }
