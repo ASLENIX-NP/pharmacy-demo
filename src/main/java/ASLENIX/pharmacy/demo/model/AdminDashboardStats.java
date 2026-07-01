@@ -18,9 +18,9 @@ public class AdminDashboardStats {
     private  UUID id;
 
      private Integer year;
-     private Integer Month;
+     private Integer month;
 
-     private LocalDate LastUpdated;
+     private LocalDate lastUpdated;
 
      private Double thisMonthSales;
 

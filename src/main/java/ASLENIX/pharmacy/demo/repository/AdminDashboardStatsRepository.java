@@ -12,5 +12,5 @@ public interface AdminDashboardStatsRepository extends JpaRepository<AdminDashbo
     Optional<AdminDashboardStats> findTopByOrderByYearDescMonthDesc();
 
     // Bonus: If you ever need to find stats for a specific month/year
-    AdminDashboardStats findByYearAndMonth(Integer year, Integer month);
+    Optional<AdminDashboardStats> findByYearAndMonth(Integer year, Integer month);
 }
