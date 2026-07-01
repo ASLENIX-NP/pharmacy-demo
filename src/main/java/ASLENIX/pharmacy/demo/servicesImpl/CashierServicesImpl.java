@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +125,14 @@ public class CashierServicesImpl implements CashierServices {
         invoice.setInvoiceStatus(InvoiceStatus.COMPLETE);
         invoice.setPaymentMethod(paymentMethod);
         invoice.setAmountReceived(amountPaid);
-        invoice.setChangeReturned(amountPaid-grandTotal);
+
+        Double changeReturn = amountPaid-grandTotal;
+
+        BigDecimal tempRoundOff = new BigDecimal(Double.toString(changeReturn));
+
+        changeReturn = tempRoundOff.setScale(2, RoundingMode.HALF_UP).doubleValue();
+
+        invoice.setChangeReturned(changeReturn);
 
         invoiceRepository.save(invoice);
 
