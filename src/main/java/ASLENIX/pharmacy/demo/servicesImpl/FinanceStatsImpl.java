@@ -107,8 +107,6 @@ public class FinanceStatsImpl implements SchedulableTask {
             }
         }
 
-        System.out.println(lastMonthFinanceStat.toString());
-
         Double tempGrowthRate = calculateProRatedGrowthRate(
                 todayFinanceStat.getTotalRevenue() ,
                 lastMonthFinanceStat.getTotalRevenue());
@@ -130,6 +128,9 @@ public class FinanceStatsImpl implements SchedulableTask {
         todayFinanceStat.setProfitMarginGrowthRate(tempGrowthRate);
 
         todayFinanceStat.setLastUpdated(LocalDateTime.now());
+
+        todayFinanceStat.roundOff();
+
         financeStatsRepository.save(todayFinanceStat);
 
     }
