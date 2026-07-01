@@ -35,12 +35,15 @@ public class AdminDashboardStatsImpl implements SchedulableTask {
         int year = now.getYear();
         int month = now.getMonthValue();
 
-        AdminDashboardStats adminDashboardStats = adminDashboardStatsRepository.findByYearAndMonth(year, month);
-        if (adminDashboardStats == null) {
-            adminDashboardStats = new AdminDashboardStats();
-            adminDashboardStats.setYear(year);
-            adminDashboardStats.setMonth(month);
-        }
+
+        AdminDashboardStats adminDashboardStats = adminDashboardStatsRepository.findByYearAndMonth(year, month)
+                .orElseGet(() -> {
+                    AdminDashboardStats newStats = new AdminDashboardStats();
+                    newStats.setYear(year);
+                    newStats.setMonth(month);
+
+                    return  newStats;
+                });
 
         LocalDate startDate = now.withDayOfMonth(1);
         LocalDate endDate = now.withDayOfMonth(now.getDayOfMonth());
