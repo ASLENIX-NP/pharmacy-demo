@@ -53,6 +53,9 @@ public class AdminDashboardStatsImpl implements SchedulableTask {
 
         adminDashboardStats.setThisMonthSales(total);
         adminDashboardStats.setLastUpdated(now);
+
+        adminDashboardStats.roundOff();
+
         adminDashboardStatsRepository.save(adminDashboardStats);
     }
 }
