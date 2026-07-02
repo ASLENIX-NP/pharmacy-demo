@@ -11,6 +11,7 @@ import ASLENIX.pharmacy.demo.services.SchedulableTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -75,14 +76,14 @@ public class LowStockTaskImpl implements SchedulableTask {
         List<InventoryBatch> inventoryBatchList = inventoryBatchRepository.findApprovedBackRoomStockBatches();
 
         for(InventoryBatch inventoryBatch : inventoryBatchList){
-            Long id = inventoryBatch.getId();
+            Long productId = inventoryBatch.getProduct().getId();
             Long newStocks = inventoryBatch.getCurrentStock();
 
-            if(productIdToBackRoomStocks.containsKey(id)){
-                Long prevStocks= productIdToBackRoomStocks.get(id);
+            if(productIdToBackRoomStocks.containsKey(productId)){
+                Long prevStocks= productIdToBackRoomStocks.get(productId);
                 productIdToBackRoomStocks.put(inventoryBatch.getId() , prevStocks+newStocks );
             }else {
-                productIdToBackRoomStocks.put(id,newStocks);
+                productIdToBackRoomStocks.put(productId,newStocks);
             }
         }
 
@@ -93,7 +94,9 @@ public class LowStockTaskImpl implements SchedulableTask {
 
 
     @Override
-    public void execute()   {HashMap<Long, Product> productIdToProduct = mapProductIdToProduct();
+    public void execute()   {
+
+        HashMap<Long, Product> productIdToProduct = mapProductIdToProduct();
         HashMap<Long, Long> productIdToCurrentStocks = mapProductIdToCurrentStocks();
         HashMap<Long, Long> productIdToBackRoomStocks = mapProductIdToStorageStocks();
 
@@ -106,10 +109,13 @@ public class LowStockTaskImpl implements SchedulableTask {
                 .collect(Collectors.toMap(
                         lsn -> lsn.getProduct().getId(),
                         lsn -> lsn,
-                        (existing, replacement) -> existing // Merge function: keep the first one if duplicates somehow exist
+                        (existing, replacement) -> replacement // Merge function: keep the new one if duplicates somehow
+                        // exist
                 ));
 
         List<LowStockNotification> saveNotification = new LinkedList<>();
+        List<LowStockNotification> deleteNotification = new LinkedList<>();
+
 
 // 3. Iterate through your master product list
         for (Map.Entry<Long, Product> entry : productIdToProduct.entrySet()) {
@@ -125,6 +131,7 @@ public class LowStockTaskImpl implements SchedulableTask {
             boolean isCurrentLow = currentStock < minStock;
             boolean isTotalLow = totalStock < minStock;
 
+            //product is low so add them in notification
             if (isCurrentLow || isTotalLow) {
 
                 // 4. O(1) memory lookup from our pre-fetched map
@@ -135,6 +142,7 @@ public class LowStockTaskImpl implements SchedulableTask {
                     lsn = new LowStockNotification();
                     lsn.setProduct(product);
                     lsn.setActionTaken(false);
+                    lsn.setCreatedAt(LocalDate.now());
                 }
 
                 // 5. Apply business logic updates
@@ -142,15 +150,24 @@ public class LowStockTaskImpl implements SchedulableTask {
                     lsn.setTotalStocks(totalStock);
                     lsn.setInternalLowStock(false); // Global alert takes precedence
                 } else {
-                    lsn.setTotalStocks(currentStock);
+                    lsn.setTotalStocks(totalStock);
                     lsn.setInternalLowStock(true);  // Storekeeper specific alert
                 }
-
                 saveNotification.add(lsn);
+
+            }else {
+                //now the product is no longer in low stocks delete from low stock notify if exists
+                if (productToNotificationMap.containsKey(productId)){
+                    deleteNotification.add(productToNotificationMap.get(productId));
+                }
             }
+
+
         }
 
-// 6. Perform a highly efficient transactional batch save/update
+
+
+        lowStockNotificationRepository.deleteAll(deleteNotification);
         lowStockNotificationRepository.saveAll(saveNotification);
 
     }
