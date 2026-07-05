@@ -36,6 +36,8 @@ public interface AdminServices {
 
     Integer countPendingOrder ();
 
+    void disposeExpiredInventory(Long id);
+
 
 
     /*

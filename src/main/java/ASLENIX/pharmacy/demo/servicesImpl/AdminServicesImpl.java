@@ -1,15 +1,17 @@
 package ASLENIX.pharmacy.demo.servicesImpl;
 
+import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.Enums.PaymentStatus;
+import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
+import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
+import ASLENIX.pharmacy.demo.exception.InvoiceNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -113,6 +115,32 @@ public class AdminServicesImpl implements AdminServices {
         return purchaseOrderRepository.countByPaymentStatus(PaymentStatus.PENDING);
     }
 
+    @Override
+    public void disposeExpiredInventory(Long id) {
+        ExpiryDateNotification  expiryDateNotification=
+                expiryDateNotificationRepository.findById(id).orElseThrow(
+                        ()-> new ExpiryDateNotificationNotFound("This notification do not exists")
+                        );
+
+        Optional<InventoryBatch> inventoryBatchOptional =
+                inventoryBatchRepository.findById(expiryDateNotification.getInventoryBatch().getId());
+
+        InventoryBatch inventoryBatch;
+
+        if(inventoryBatchOptional.isEmpty()){
+            throw  new InventoryBatchNotFoundException("This batch do not exits");
+        }else {
+            inventoryBatch = inventoryBatchOptional.get();
+        }
+
+        inventoryBatch.setBatchApprovalStatus(BatchApprovalStatus.PENDING_REMOVAL);
+
+        expiryDateNotification.setActionTaken(true);
+
+        expiryDateNotificationRepository.save(expiryDateNotification);
+        inventoryBatchRepository.save(inventoryBatch);
+    }
+
     /*
 ==============================================================
                 supplier
@@ -192,7 +220,7 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public List<InventoryBatch> getAllInventoryBatch() {
-        return inventoryBatchRepository.findAll();
+        return inventoryBatchRepository.findAll(Sort.by(Sort.Direction.ASC,"batchNumber"));
     }
 
      /*
@@ -220,7 +248,7 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public List<Product> getAllProduct() {
-        return productRepository.findAll();
+        return productRepository.findAll(Sort.by(Sort.Direction.ASC,"name"));
     }
 
      /*

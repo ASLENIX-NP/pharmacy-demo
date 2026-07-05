@@ -1,6 +1,8 @@
 package ASLENIX.pharmacy.demo.controller;
 
 import ASLENIX.pharmacy.demo.Enums.*;
+import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
+import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.servicesImpl.AdminServicesImpl;
 import jakarta.servlet.http.HttpSession;
@@ -50,6 +52,26 @@ public class AdminController {
 
         model.addAttribute("currentPage", "overview");
         return "adminDashboard";
+    }
+
+    @PostMapping("admin/dashboard/notifications/expiry/dispose")
+    public String disposeExpiredInventoryPost(
+            @RequestParam("expiredNotificationId") Long expiredNotificationId,
+            HttpSession session, RedirectAttributes redirectAttributes){
+        if (session.getAttribute("activeUser") == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            adminServices.disposeExpiredInventory(expiredNotificationId);
+            redirectAttributes.addFlashAttribute("dashboardSuccess", "Batch set to removed from main rack");
+
+        }
+        catch (InventoryBatchNotFoundException | ExpiryDateNotificationNotFound e){
+            redirectAttributes.addFlashAttribute("dashboardError", e.getMessage());
+        }
+
+        return "redirect:/admin/dashboard";
     }
 
 //========================================================================
