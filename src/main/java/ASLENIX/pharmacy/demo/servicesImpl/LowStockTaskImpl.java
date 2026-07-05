@@ -63,11 +63,8 @@ public class LowStockTaskImpl implements SchedulableTask {
             }
 
             productIdToCurrentStocks.put(productId,newStocks);
-
         }
-
         return productIdToCurrentStocks;
-
     }
 
     HashMap<Long,Long> mapProductIdToStorageStocks(){
@@ -86,12 +83,8 @@ public class LowStockTaskImpl implements SchedulableTask {
                 productIdToBackRoomStocks.put(productId,newStocks);
             }
         }
-
         return productIdToBackRoomStocks;
-
     }
-
-
 
     @Override
     public void execute()   {
@@ -161,11 +154,7 @@ public class LowStockTaskImpl implements SchedulableTask {
                     deleteNotification.add(productToNotificationMap.get(productId));
                 }
             }
-
-
         }
-
-
 
         lowStockNotificationRepository.deleteAll(deleteNotification);
         lowStockNotificationRepository.saveAll(saveNotification);

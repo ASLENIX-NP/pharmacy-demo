@@ -112,6 +112,39 @@
                 </div>
             </div>
 
+
+            
+            <!-- Error Message -->
+
+            <div class="container mt-3">
+                <!-- Error Message -->
+
+                <div th:if="${invoiceError}" 
+                    class="alert alert-danger fade show mb-3 d-flex align-items-center" 
+                    style="background-color: #fff5f5; border: none; border-left: 5px solid #dc3545; color: #b02a37; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
+                    role="alert">
+                    
+                    <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
+                    <span th:text="${invoiceError}" class="fw-medium">Error text here</span>
+                    
+                </div>
+                
+                <!-- Success Message -->
+
+                <div th:if="${invoiceSuccess}" 
+                    class="alert alert-success fade show mb-3 d-flex align-items-center" 
+                    style="background-color: #f0fdf4; border: none; border-left: 5px solid #198754; color: #146c43; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
+                    role="alert">
+                    
+                    <i class="bi bi-check-circle-fill me-3 fs-5"></i>
+                    <span th:text="${invoiceSuccess}" class="fw-medium">Success text here</span>
+                    
+                </div>
+            </div>
+
+
+
+
             <!-- Notifications Table -->
             <h5 class="mb-3">Recent Alerts & Notifications</h5>
                         
@@ -171,8 +204,8 @@
                                         <span th:if="${expiry.daysLeft <= 0}" class="text-danger" th:text="'Expired on ' + ${expiry.inventoryBatch.expiryDate}">Expired</span>
                                     </td>
                                     <td>
-                                        <form th:action="@{/admin/notifications/expiry/dispose}" method="post" class="d-inline">
-                                            <input type="hidden" name="notificationId" th:value="${expiry.id}" />
+                                        <form th:action="@{/admin/dashboard/notifications/expiry/dispose}" method="post" class="d-inline">
+                                            <input type="hidden" name="expiredNotificationId" id="expiredNotificationId" th:value="${expiry.id}" />
                                             <button type="submit" class="btn btn-sm btn-outline-danger" th:disabled="${expiry.actionTaken}">
                                                 Dispose
                                             </button>
