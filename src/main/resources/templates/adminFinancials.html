@@ -351,50 +351,7 @@
                                 </div>
                             </div>
 
-                            <!-- Expenses Table -->
-                            <div class="modern-card p-0 overflow-hidden">
-                                <div class="card-header-flex p-4 pb-0">
-                                    <h3 class="card-title">Expense Details</h3>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-hover mb-0 mt-3" style="font-size: 0.95rem;">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th class="ps-4">Expense Type</th>
-                                                <th>Amount</th>
-                                                <th>Category</th>
-                                                <th>Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="ps-4">Staff Salaries</td>
-                                                <td>Rs. 50,000</td>
-                                                <td>Payroll</td>
-                                                <td>2026-05-01</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="ps-4">Utilities</td>
-                                                <td>Rs. 15,325</td>
-                                                <td>Operations</td>
-                                                <td>2026-05-15</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="ps-4">Inventory Restock</td>
-                                                <td>Rs. 32,500</td>
-                                                <td>Purchases</td>
-                                                <td>2026-05-18</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="ps-4">Marketing</td>
-                                                <td>Rs. 8,000</td>
-                                                <td>Advertising</td>
-                                                <td>2026-05-20</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
 
@@ -429,10 +386,20 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script th:inline="javascript">
-        /*<![CDATA[*/
+
         // Data for Purchase Orders Status (Completed, Received, Due)
-        const poStatusData = /*[[${poStatusData}]]*/[];
-        /*]]>*/
+        const purchaseOrderStatusMap = { 'Completed': 10, 'Received': 25, 'Due': 5 };
+        const purchaseOrderStatusKey = Object.keys(purchaseOrderStatusMap)
+        const purchaseOrderStatusValue = Object.values(purchaseOrderStatusMap)
+
+     // Generates a soft, pastel color for every slice automatically
+const backgroundColors = purchaseOrderStatusKey.map((_, index) => {
+    // 45% saturation makes it less sharp, 85% lightness makes it soft/pastel
+    return `hsl(${(index * (360 / purchaseOrderStatusKey.length)) % 360}, 50%, 45%)`;
+});
+
+
+        
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -665,10 +632,10 @@
             new Chart(poStatusCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Completed', 'Received', 'Due'],
+                    labels: purchaseOrderStatusKey,
                     datasets: [{
-                        data: poStatusData,
-                        backgroundColor: ['#10B981', '#3B82F6', '#EB411A'],
+                        data: purchaseOrderStatusValue,
+                        backgroundColor: backgroundColors,
                         borderWidth: 0,
                         hoverOffset: 4
                     }]

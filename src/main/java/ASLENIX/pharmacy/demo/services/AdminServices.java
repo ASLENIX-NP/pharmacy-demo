@@ -2,6 +2,7 @@ package ASLENIX.pharmacy.demo.services;
 
 import ASLENIX.pharmacy.demo.model.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface AdminServices {
@@ -116,6 +117,17 @@ public interface AdminServices {
     Category getCategoryById(Long id);
 
     List<Category> getAllCategory();
+
+/*
+==============================================================
+                finance
+====================================================
+
+ */
+
+    HashMap<String,Integer> mapPaymentStatusThisMonth ();
+
+
 
 
 }

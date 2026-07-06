@@ -4,7 +4,6 @@ import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.Enums.PaymentStatus;
 import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
 import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
-import ASLENIX.pharmacy.demo.exception.InvoiceNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
@@ -13,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -278,8 +278,34 @@ public class AdminServicesImpl implements AdminServices {
         return  categoryRepository.findAll();
     }
 
+    /*
+==============================================================
+                finance
+====================================================
+
+ */
 
 
+    @Override
+    public HashMap<String, Integer> mapPaymentStatusThisMonth() {
+
+        HashMap<String, Integer> billCountByStatus = new HashMap<>();
+
+        List<PurchaseOrder> purchaseOrders = purchaseOrderRepository.findAll();
+
+        for (PurchaseOrder purchaseOrder : purchaseOrders){
+            String currentStatus = purchaseOrder.getPaymentStatus().getValue();
+            if(!billCountByStatus.containsKey(currentStatus)){
+                billCountByStatus.put(currentStatus,1);
+            }
+            int count = billCountByStatus.get(currentStatus);
+            count++;
+            billCountByStatus.put(currentStatus,count);
+        }
+
+
+        return billCountByStatus;
+    }
 
 
 }
