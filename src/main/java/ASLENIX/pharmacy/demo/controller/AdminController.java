@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -667,18 +668,10 @@ public class AdminController {
          }
         model.addAttribute("currentPage", "financials");
 
-        List<PurchaseOrder> purchaseOrders = adminServices.getAllPurchaseOrder();
-        int completedCount = 0;
-        int receivedCount = 0;
-        int dueCount = 0;
-        if (purchaseOrders != null) {
-            for (PurchaseOrder po : purchaseOrders) {
-                if (po.getPaymentStatus() == PaymentStatus.COMPLETE) completedCount++;
-                else if (po.getPaymentStatus() == PaymentStatus.RECEIVED) receivedCount++;
-                else if (po.getPaymentStatus() == PaymentStatus.DUE) dueCount++;
-            }
-        }
-        model.addAttribute("poStatusData", java.util.Arrays.asList(completedCount, receivedCount, dueCount));
+        HashMap<String, Integer> billCountByStatus = adminServices.mapPaymentStatusThisMonth();
+
+
+        model.addAttribute("purchaseOrderStatusMap",billCountByStatus );
 
         return "adminFinancials";
     }
