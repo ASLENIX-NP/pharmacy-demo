@@ -192,32 +192,52 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Mon, 15 May</td>
-                                                <td>45</td>
+                                                <td>Jan</td>
+                                                <td>450</td>
                                             </tr>
                                             <tr>
-                                                <td>Tue, 16 May</td>
-                                                <td>62</td>
+                                                <td>Feb</td>
+                                                <td>620</td>
                                             </tr>
                                             <tr>
-                                                <td>Wed, 17 May</td>
-                                                <td>53</td>
+                                                <td>Mar</td>
+                                                <td>530</td>
                                             </tr>
                                             <tr>
-                                                <td>Thu, 18 May</td>
-                                                <td>78</td>
+                                                <td>Apr</td>
+                                                <td>780</td>
                                             </tr>
                                             <tr>
-                                                <td>Fri, 19 May</td>
-                                                <td>85</td>
+                                                <td>May</td>
+                                                <td>850</td>
                                             </tr>
                                             <tr>
-                                                <td>Sat, 20 May</td>
-                                                <td>60</td>
+                                                <td>Jun</td>
+                                                <td>600</td>
                                             </tr>
                                             <tr>
-                                                <td>Sun, 21 May</td>
-                                                <td>48</td>
+                                                <td>Jul</td>
+                                                <td>480</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Aug</td>
+                                                <td>500</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Sep</td>
+                                                <td>610</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Oct</td>
+                                                <td>720</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nov</td>
+                                                <td>690</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Dec</td>
+                                                <td>800</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -428,10 +448,10 @@
             new Chart(incomeCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [{
                         label: 'Income (Rs.)',
-                        data: [15000, 22000, 18000, 25000, 32000, 28000, 35000],
+                        data: [150000, 220000, 180000, 250000, 320000, 280000, 350000, 300000, 380000, 410000, 390000, 450000],
                         borderColor: '#10B981',
                         backgroundColor: incomeGradient,
                         borderWidth: 3,
@@ -490,10 +510,10 @@
             new Chart(ordersCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [{
                         label: 'Orders',
-                        data: [45, 62, 53, 78, 85, 60, 48],
+                        data: [450, 620, 530, 780, 850, 600, 480, 500, 610, 720, 690, 800],
                         backgroundColor: '#3B82F6',
                         borderRadius: 6,
                         borderSkipped: false,
