@@ -675,9 +675,4 @@ public class AdminController {
 
         return "adminFinancials";
     }
-
-
-
-
-
 }

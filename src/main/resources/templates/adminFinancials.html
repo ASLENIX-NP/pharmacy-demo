@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <!-- Bootstrap Bundle JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/sidebar-persistent.js}" defer></script></head>
 
 </head>
@@ -30,8 +30,8 @@
 
 		<!-- pages headders -->
         <div class="container-fluid mt-2">
-            <div class="row g-4 mb-5 align-items-end"> 
-                
+            <div class="row g-4 mb-5 align-items-end">
+
                 <!-- Left Column: Sidebar Button -->
                 <div class="col-md-4 col-lg-4 d-flex align-items-center">
                     <button class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-2 text-nowrap" data-bs-toggle="collapse" data-bs-target="#sidebarWrapper">
@@ -47,8 +47,8 @@
                         <h1 class="mb-0 text-nowrap fw-bold">Financial & Reports</h1>
                     </div>
                 </div>
-                        
-                
+
+
             </div>
         </div>
 
@@ -189,138 +189,21 @@
                             </div>
 
                             <!-- Total Orders -->
-                            <div class="modern-card">
+                            <div class="modern-card income-card">
                                 <div class="card-header-flex">
                                     <h3 class="card-title">
                                         <i class="bi bi-cart3 text-primary me-2"></i>Total Orders
                                     </h3>
 
                                 </div>
-                                <div class="chart-container mb-4" style="height: 250px; max-height: 250px;">
+                                <div class="chart-container">
                                     <canvas id="ordersChart"></canvas>
-                                </div>
-                                <!-- Orders Report Table -->
-                                <div class="table-responsive rounded border mb-3">
-                                    <table class="table table-hover mb-0" style="font-size: 0.9rem;">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Order Date</th>
-                                                <th>Orders</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Mon, 15 May</td>
-                                                <td>45</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Tue, 16 May</td>
-                                                <td>62</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Wed, 17 May</td>
-                                                <td>53</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Thu, 18 May</td>
-                                                <td>78</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Fri, 19 May</td>
-                                                <td>85</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sat, 20 May</td>
-                                                <td>60</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Sun, 21 May</td>
-                                                <td>48</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
                                 </div>
                                 <div class="text-center mt-auto pt-2">
                                     <a href="#" class="text-decoration-none fw-medium">View All Orders &rarr;</a>
                                 </div>
                             </div>
 
-                            <!-- Payment Methods -->
-                            <div class="modern-card">
-                                <div class="card-header-flex">
-                                    <h3 class="card-title">
-                                        <i class="bi bi-credit-card text-success me-2"></i>Payment Methods
-                                    </h3>
-
-                                </div>
-                                <div class="row align-items-center flex-grow-1 mb-3">
-                                    <div class="col-md-6">
-                                        <div class="chart-container" style="height: 400px; max-height: 400px;">
-                                            <canvas id="paymentChart"></canvas>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="table-responsive rounded border">
-                                            <table class="table table-hover mb-0" style="font-size: 0.9rem;">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th>Payment Method</th>
-                                                        <th>Transactions</th>
-                                                        <th>Percentage</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <span class="d-inline-block rounded-circle me-2"
-                                                                style="width: 10px; height: 10px; background-color: #10B981;"></span>Cash
-                                                        </td>
-                                                        <td>350</td>
-                                                        <td>35%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <span class="d-inline-block rounded-circle me-2"
-                                                                style="width: 10px; height: 10px; background-color: #3B82F6;"></span>Credit
-                                                            Card
-                                                        </td>
-                                                        <td>250</td>
-                                                        <td>25%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <span class="d-inline-block rounded-circle me-2"
-                                                                style="width: 10px; height: 10px; background-color: #F97316;"></span>UPI
-                                                        </td>
-                                                        <td>200</td>
-                                                        <td>20%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <span class="d-inline-block rounded-circle me-2"
-                                                                style="width: 10px; height: 10px; background-color: #8B5CF6;"></span>Debit
-                                                            Card
-                                                        </td>
-                                                        <td>150</td>
-                                                        <td>15%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <span class="d-inline-block rounded-circle me-2"
-                                                                style="width: 10px; height: 10px; background-color: #14B8A6;"></span>Wallet
-                                                        </td>
-                                                        <td>50</td>
-                                                        <td>5%</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="text-center mt-auto pt-2">
-                                    <a href="#" class="text-decoration-none fw-medium">View All Transactions &rarr;</a>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -340,18 +223,17 @@
                             </div>
 
                             <!-- Purchase Orders Status Chart -->
-                            <div class="modern-card">
+                            <div class="modern-card income-card">
                                 <div class="card-header-flex">
                                     <h3 class="card-title">
                                         <i class="bi bi-box-seam text-warning me-2"></i>Purchase Orders Status
                                     </h3>
                                 </div>
-                                <div class="chart-container" style="height: 300px; max-height: 300px;">
+                                <div class="chart-container">
                                     <canvas id="poStatusChart"></canvas>
                                 </div>
                             </div>
 
-                            
                         </div>
                     </div>
 
@@ -399,7 +281,7 @@ const backgroundColors = purchaseOrderStatusKey.map((_, index) => {
 });
 
 
-        
+
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -413,10 +295,10 @@ const backgroundColors = purchaseOrderStatusKey.map((_, index) => {
             new Chart(incomeCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [{
                         label: 'Income (Rs.)',
-                        data: [15000, 22000, 18000, 25000, 32000, 28000, 35000],
+                        data: [150000, 220000, 180000, 250000, 320000, 280000, 350000, 300000, 380000, 410000, 390000, 450000],
                         borderColor: '#10B981',
                         backgroundColor: incomeGradient,
                         borderWidth: 3,
@@ -475,10 +357,10 @@ const backgroundColors = purchaseOrderStatusKey.map((_, index) => {
             new Chart(ordersCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [{
                         label: 'Orders',
-                        data: [45, 62, 53, 78, 85, 60, 48],
+                        data: [450, 620, 530, 780, 850, 600, 480, 500, 610, 720, 690, 800],
                         backgroundColor: '#3B82F6',
                         borderRadius: 6,
                         borderSkipped: false,
@@ -518,45 +400,6 @@ const backgroundColors = purchaseOrderStatusKey.map((_, index) => {
                     },
                     onHover: (event, chartElement) => {
                         event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
-                    }
-                }
-            });
-
-            // Payment Methods Chart
-            const paymentCtx = document.getElementById('paymentChart').getContext('2d');
-            new Chart(paymentCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Cash', 'Credit Card', 'UPI', 'Debit Card', 'Wallet'],
-                    datasets: [{
-                        data: [35, 25, 20, 15, 5],
-                        backgroundColor: ['#10B981', '#3B82F6', '#F97316', '#8B5CF6', '#14B8A6'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: {
-                        datalabels: {
-                            color: '#ffffff',
-                            font: { family: 'Inter', weight: 'bold', size: 14 },
-                            formatter: function (value) { return value + '%'; }
-                        },
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#1F2937',
-                            padding: 12,
-                            titleFont: { family: 'Inter', size: 13 },
-                            bodyFont: { family: 'Inter', size: 14, weight: 'bold' },
-                            callbacks: {
-                                label: function (context) {
-                                    return (context.label || '') + ': ' + (context.parsed !== null ? context.parsed + '%' : '');
-                                }
-                            }
-                        }
                     }
                 }
             });
