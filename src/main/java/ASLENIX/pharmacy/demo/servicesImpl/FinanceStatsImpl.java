@@ -39,6 +39,8 @@ public class FinanceStatsImpl implements SchedulableTask {
         Double totalRevenue = invoiceRepository.sumRevenueBetween(startDate , endDate);
         totalRevenue = (totalRevenue != null) ? totalRevenue : 0.0;
 
+        Long totalUnitsSold = invoiceRepository.getTotalItemQuantityByDateRange(startDate,endDate);
+
         Double totalPurchaseOrder = purchaseOrderRepository.sumPurchasesBetween(startDate , endDate);
         totalPurchaseOrder = (totalPurchaseOrder != null) ? totalPurchaseOrder:0.0;
 
@@ -57,6 +59,7 @@ public class FinanceStatsImpl implements SchedulableTask {
         financeStats.setPurchaseOrderTotal(totalPurchaseOrder);
         financeStats.setNetProfit(netProfit);
         financeStats.setProfitMargin(profitMargin);
+        financeStats.setTotalUnitsSold(totalUnitsSold);
         financeStats.setLastUpdated(LocalDateTime.now());
 
         return financeStatsRepository.save(financeStats);

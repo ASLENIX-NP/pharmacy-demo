@@ -34,6 +34,8 @@ public class FinanceStats {
     private Double profitMargin ;
     private Double profitMarginGrowthRate ;
 
+    private Long totalUnitsSold;
+
     private LocalDateTime lastUpdated;
 
     private Double roundOffOne(Double value) {
