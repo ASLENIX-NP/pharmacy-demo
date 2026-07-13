@@ -73,12 +73,19 @@ public class Invoice {
         this.invoiceNumber = String.format("INV-%06d", this.id);
     }
 
+    private Double roundOffOne(Double value) {
+        if (value == null) {
+            return 0.0; // Or return null depending on your business logic
+        }
+        BigDecimal bd = new BigDecimal(Double.toString(value));
+        return bd.setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
 
     public void recalculateTotals(){
-        this.subTotal =0.0;
-        this.discountAmount=0.0;
-        this.vatAmount=0.0;
-        this.grandTotal =0.0;
+        double totalSubTotal = 0.0;
+        double totalDiscountAmount = 0.0;
+        double totalVatAmount = 0.0;
+        double totalGrandTotal = 0.0;
 
         for(InvoiceItem invoiceItems :invoiceItemList){
             Double subTotal = invoiceItems.getQuantity() *invoiceItems.getUnitPrice();
@@ -93,30 +100,16 @@ public class Invoice {
             double lineTotal =subTotal -discountAmount + vatAmount;
             invoiceItems.setLineTotal(lineTotal);
 
-            BigDecimal tempRoundOff ;
-            Double tempPrevRpundOff;
-
-            tempPrevRpundOff = this.subTotal;
-            tempPrevRpundOff +=subTotal;
-            tempRoundOff= new BigDecimal(Double.toString(tempPrevRpundOff));
-            this.subTotal = tempRoundOff.setScale(2, RoundingMode.HALF_UP).doubleValue();
-
-            tempPrevRpundOff=this.discountAmount;
-            tempPrevRpundOff += discountAmount;
-            tempRoundOff= new BigDecimal(Double.toString(tempPrevRpundOff));
-            this.discountAmount = tempRoundOff.setScale(2, RoundingMode.HALF_UP).doubleValue();
-
-            tempPrevRpundOff=this.vatAmount;
-            tempPrevRpundOff += vatAmount;
-            tempRoundOff= new BigDecimal(Double.toString(tempPrevRpundOff));
-            this.vatAmount = tempRoundOff.setScale(2, RoundingMode.HALF_UP).doubleValue();
-
-            tempPrevRpundOff=this.grandTotal;
-            tempPrevRpundOff += lineTotal;
-            tempRoundOff= new BigDecimal(Double.toString(tempPrevRpundOff));
-            this.grandTotal = tempRoundOff.setScale(2, RoundingMode.HALF_UP).doubleValue();
-
+            totalSubTotal += subTotal;
+            totalDiscountAmount += discountAmount;
+            totalVatAmount += vatAmount;
+            totalGrandTotal += lineTotal;
         }
+
+        this.subTotal = roundOffOne(totalSubTotal);
+        this.discountAmount = roundOffOne(totalDiscountAmount);
+        this.vatAmount = roundOffOne(totalVatAmount);
+        this.grandTotal = roundOffOne(totalGrandTotal);
 
     }
 
