@@ -14,12 +14,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
-
     @Override
     public User userLogin(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username,password);
+        return userRepository.findByUsernameAndPassword(username, password);
     }
-
 
     @Component // 👈 Tells Spring to manage this class
     public class NightlyTaskScheduler {
@@ -32,7 +30,5 @@ public class UserServiceImpl implements UserService {
             System.out.println("Midnight job executed successfully.");
         }
     }
-
-
 
 }
