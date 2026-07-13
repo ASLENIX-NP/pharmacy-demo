@@ -47,4 +47,12 @@ public interface InvoiceRepository extends JpaRepository<Invoice , Long> {
     @Query("SELECT SUM(i.grandTotal) FROM Invoice i WHERE i.transactionDate BETWEEN :start AND :end")
     Double sumRevenueBetween(@Param("start") LocalDate start, @Param("end") LocalDate end);
 
+    @Query("SELECT COALESCE(SUM(item.quantity), 0) " +
+            "FROM Invoice inv " +
+            "JOIN inv.invoiceItemList item " +
+            "WHERE inv.transactionDate BETWEEN :startDate AND :endDate")
+    Long getTotalItemQuantityByDateRange(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 }
