@@ -12,9 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.time.format.TextStyle;
+import java.util.*;
 
 @Service
 public class AdminServicesImpl implements AdminServices {
@@ -46,13 +45,11 @@ public class AdminServicesImpl implements AdminServices {
     @Autowired
     private LowStockNotificationRepository lowStockNotificationRepository;
 
+    @Autowired
+    private FinanceStatsRepository financeStatsRepository;
 
-    /*
-==============================================================
-                users
-====================================================
+//  ===================  users  =================
 
- */
 
     @Override
     public void addUser(User user) {
@@ -76,12 +73,8 @@ public class AdminServicesImpl implements AdminServices {
         return userRepository.findAll(Sort.by(Sort.Direction.ASC,"status"));
     }
 
-     /*
-==============================================================
-                dashboard
-====================================================
 
- */
+//  ===================  dashboard  =================
 
 
     @Override
@@ -141,12 +134,9 @@ public class AdminServicesImpl implements AdminServices {
         inventoryBatchRepository.save(inventoryBatch);
     }
 
-    /*
-==============================================================
-                supplier
-====================================================
 
- */
+    //  ===================  supplier  =================
+
 
     @Override
     public void addSupplier(Supplier supplier) {
@@ -168,13 +158,7 @@ public class AdminServicesImpl implements AdminServices {
         return supplierRepository.findAll(Sort.by(Sort.Direction.ASC, "supplierStatus"));    }
 
 
-    /*
-==============================================================
-                purchaseOrder
-====================================================
-
- */
-
+    //  ===================  purchaseOrder  =================
     @Override
     public void addPurchaseOrder(PurchaseOrder purchaseOrder) {
         purchaseOrderRepository.saveAndFlush(purchaseOrder);
@@ -195,13 +179,7 @@ public class AdminServicesImpl implements AdminServices {
         return purchaseOrderRepository.findAll(Sort.by(Sort.Direction.ASC,"paymentStatus"));
     }
 
-    /*
-==============================================================
-                Inventory batch
-====================================================
-
- */
-
+    //  ===================  Inventory batch  =================
     @Override
     public void addInventoryBatch(InventoryBatch inventoryBatch) {
         inventoryBatchRepository.save(inventoryBatch);
@@ -223,14 +201,8 @@ public class AdminServicesImpl implements AdminServices {
         return inventoryBatchRepository.findAll(Sort.by(Sort.Direction.ASC,"batchNumber"));
     }
 
-     /*
-==============================================================
-                product
-====================================================
 
- */
-
-
+    //  ===================  product  =================
     @Override
     public void addProduct(Product product) {
         productRepository.save(product);
@@ -251,13 +223,7 @@ public class AdminServicesImpl implements AdminServices {
         return productRepository.findAll(Sort.by(Sort.Direction.ASC,"name"));
     }
 
-     /*
-  ==============================================================
-                  Category
-  ====================================================
-
-   */
-
+    //  ===================  Category  =================
     @Override
     public void addCategory(Category category) {
         categoryRepository.save(category);
@@ -278,14 +244,7 @@ public class AdminServicesImpl implements AdminServices {
         return  categoryRepository.findAll();
     }
 
-    /*
-==============================================================
-                finance
-====================================================
-
- */
-
-
+    //  ===================  finance  =================
     @Override
     public HashMap<String, Integer> mapPaymentStatusThisMonth() {
 
@@ -305,6 +264,86 @@ public class AdminServicesImpl implements AdminServices {
 
 
         return billCountByStatus;
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> mapMonthToIncome() {
+
+        LinkedHashMap<String, Double> monthToIncome = new LinkedHashMap<>();
+
+
+        LocalDate localDate = LocalDate.now().minusYears(1).plusMonths(1);
+
+        for (int i = 0; i < 12; i++) {
+            String month = localDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+            Optional<Double> totalRevenueOfAMonthOpt =
+                    financeStatsRepository.findTotalRevenueByYearAndMonth(localDate.getYear(),
+                    localDate.getMonth().getValue());
+
+            if(totalRevenueOfAMonthOpt.isPresent()){
+                monthToIncome.put(month,totalRevenueOfAMonthOpt.get());
+            }else {
+                monthToIncome.put(month,0.0);
+            }
+
+            localDate =  localDate.plusMonths(1);
+            
+        }
+
+        return monthToIncome;
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> mapMonthToExpense() {
+
+        LinkedHashMap<String, Double> monthToExpense = new LinkedHashMap<>();
+
+
+        LocalDate localDate = LocalDate.now().minusYears(1).plusMonths(1);
+
+        for (int i = 0; i < 12; i++) {
+            String month = localDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+            Optional<Double> purchaseOrderTotalOfAMonthOpt =
+                    financeStatsRepository.findPurchaseOrderTotalByYearAndMonth(localDate.getYear(),
+                            localDate.getMonth().getValue());
+
+            if(purchaseOrderTotalOfAMonthOpt.isPresent()){
+                monthToExpense.put(month, purchaseOrderTotalOfAMonthOpt.get());
+            }else {
+                monthToExpense.put(month,0.0);
+            }
+
+            localDate =  localDate.plusMonths(1);
+
+        }
+
+        return monthToExpense;
+    }
+
+    @Override
+    public LinkedHashMap<String, Long> mapMonthToQuantity() {
+        LinkedHashMap<String, Long> monthToQuantity = new LinkedHashMap<>();
+
+
+        LocalDate localDate = LocalDate.now().minusYears(1).plusMonths(1);
+
+        for (int i = 0; i < 12; i++) {
+            String month = localDate.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+            Optional<Long> totalUnitsSoldOfAMonthOpt =
+                    financeStatsRepository.findTotalUnitsSoldByYearAndMonth(localDate.getYear(),
+                            localDate.getMonth().getValue());
+
+            if(totalUnitsSoldOfAMonthOpt.isPresent()){
+                monthToQuantity.put(month, totalUnitsSoldOfAMonthOpt.get());
+            }else {
+                monthToQuantity.put(month,0L);
+            }
+
+            localDate =  localDate.plusMonths(1);
+
+        }
+
+        return monthToQuantity;
     }
 
 

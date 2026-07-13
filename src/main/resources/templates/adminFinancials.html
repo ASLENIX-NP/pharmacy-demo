@@ -44,7 +44,7 @@
                 <div class="col-md-4 col-lg-4 d-flex justify-content-center">
                     <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-graph-up-arrow text-success fs-2"></i>
-                        <h1 class="mb-0 text-nowrap fw-bold">Financial & Reports</h1>
+                        <h1 class="mb-0 text-nowrap fw-bold">Monthly Finance Report</h1>
                     </div>
                 </div>
 
@@ -53,6 +53,7 @@
         </div>
 
             <div class="container-fluid">
+                
                 <!-- Financial Summary Cards -->
                 <div class="row g-3 mb-4">
                     <div class="col-md-3">
@@ -200,7 +201,7 @@
                                     <canvas id="ordersChart"></canvas>
                                 </div>
                                 <div class="text-center mt-auto pt-2">
-                                    <a href="#" class="text-decoration-none fw-medium">View All Orders &rarr;</a>
+                                    <a href="#" class="text-decoration-none fw-medium">View All Orders</a>
                                 </div>
                             </div>
 
@@ -269,8 +270,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script th:inline="javascript">
 
-        // Data for Purchase Orders Status (Completed, Received, Due)
-        const purchaseOrderStatusMap = { 'Completed': 10, 'Received': 25, 'Due': 5 };
+        // Thymeleaf evaluates the comment expression and injects the live Java Map as a JS Object
+        const purchaseOrderStatusMap = /*[[${purchaseOrderStatusMap}]]*/ { 'Completed': 0, 'Received': 0, 'Due': 0 };
         const purchaseOrderStatusKey = Object.keys(purchaseOrderStatusMap)
         const purchaseOrderStatusValue = Object.values(purchaseOrderStatusMap)
 
@@ -278,7 +279,21 @@
 const backgroundColors = purchaseOrderStatusKey.map((_, index) => {
     // 45% saturation makes it less sharp, 85% lightness makes it soft/pastel
     return `hsl(${(index * (360 / purchaseOrderStatusKey.length)) % 360}, 50%, 45%)`;
-});
+    });
+
+    const monthToIncomeMap =/*[[${monthToIncomeMap}]]*/ {'jan': 200.23,}
+    const monthToIncomeKey = Object.keys(monthToIncomeMap)
+    const monthToIncomeValue=  Object.values(monthToIncomeMap)
+
+    const monthToExpenseMap =/*[[${monthToExpenseMap}]]*/ {'jan': 200.23,}
+    const monthToExpenseKey = Object.keys(monthToExpenseMap)
+    const monthToExpenseValue = Object.values(monthToExpenseMap)
+
+    const monthToQuantityMap =/*[[${monthToQuantityMap}]]*/ {'jan': 200,}
+    const monthToQuantityKey = Object.keys(monthToQuantityMap)
+    const monthToQuantityValue = Object.values(monthToQuantityMap)
+
+
 
 
 
@@ -295,10 +310,10 @@ const backgroundColors = purchaseOrderStatusKey.map((_, index) => {
             new Chart(incomeCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    labels: monthToIncomeKey,
                     datasets: [{
                         label: 'Income (Rs.)',
-                        data: [150000, 220000, 180000, 250000, 320000, 280000, 350000, 300000, 380000, 410000, 390000, 450000],
+                        data: monthToIncomeValue,
                         borderColor: '#10B981',
                         backgroundColor: incomeGradient,
                         borderWidth: 3,
@@ -357,10 +372,10 @@ const backgroundColors = purchaseOrderStatusKey.map((_, index) => {
             new Chart(ordersCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    labels: monthToQuantityKey,
                     datasets: [{
                         label: 'Orders',
-                        data: [450, 620, 530, 780, 850, 600, 480, 500, 610, 720, 690, 800],
+                        data: monthToQuantityValue,
                         backgroundColor: '#3B82F6',
                         borderRadius: 6,
                         borderSkipped: false,
@@ -413,10 +428,10 @@ const backgroundColors = purchaseOrderStatusKey.map((_, index) => {
             new Chart(expensesCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    labels: monthToExpenseKey,
                     datasets: [{
                         label: 'Expenses (Rs.)',
-                        data: [15000, 18000, 12000, 25000, 22000, 30000, 28000, 35000, 32000, 40000, 38000, 45000],
+                        data: monthToExpenseValue,
                         borderColor: '#EF4444',
                         backgroundColor: expensesGradient,
                         borderWidth: 3,
