@@ -19,16 +19,5 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsernameAndPassword(username, password);
     }
 
-    @Component // 👈 Tells Spring to manage this class
-    public class NightlyTaskScheduler {
-
-        @Scheduled(cron = "0 0 0 * * ?") // 👈 Runs every night at midnight
-        public void runMidnightJob() {
-            // 1. Fetch your models here
-            // 2. Perform the logic or updates
-            // 3. Save them back to the database
-            System.out.println("Midnight job executed successfully.");
-        }
-    }
 
 }
