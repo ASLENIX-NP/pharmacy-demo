@@ -676,6 +676,8 @@ public class AdminController {
 
         LinkedHashMap<String,Long > monthToQuantity = adminServices.mapMonthToQuantity();
 
+        FinanceStats LiveFinanceStat = adminServices.thisMonthsFinanceStats();
+
         model.addAttribute("purchaseOrderStatusMap",billCountByStatus );
 
         model.addAttribute("monthToIncomeMap", monthToIncome);
@@ -683,6 +685,8 @@ public class AdminController {
         model.addAttribute("monthToExpenseMap", monthToExpense);
 
         model.addAttribute("monthToQuantityMap", monthToQuantity);
+
+        model.addAttribute("financeStat" , LiveFinanceStat);
 
         return "adminFinancials";
     }

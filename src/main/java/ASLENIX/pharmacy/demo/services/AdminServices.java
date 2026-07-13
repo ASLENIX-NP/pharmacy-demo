@@ -5,6 +5,7 @@ import ASLENIX.pharmacy.demo.model.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 public interface AdminServices {
 /*
@@ -133,6 +134,10 @@ public interface AdminServices {
     LinkedHashMap<String,Double> mapMonthToExpense();
 
     LinkedHashMap<String,Long> mapMonthToQuantity();
+
+    FinanceStats thisMonthsFinanceStats();
+
+
 
 
 
