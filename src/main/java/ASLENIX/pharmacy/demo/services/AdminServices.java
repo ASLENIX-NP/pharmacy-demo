@@ -8,28 +8,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AdminServices {
-/*
-==============================================================
-                users
-====================================================
 
- */
+    //==============  users =======================
+
     void addUser(User user);
 
     void updateUser( User user);
-
 
     User getUserById(Long id);
 
     List<User> getAllUsers();
 
 
-     /*
-==============================================================
-                dashboard
-====================================================
-
- */
+    //==============  dashboard =======================
 
     Double getTotalSalesThisMonth();
 
@@ -42,13 +33,7 @@ public interface AdminServices {
     void disposeExpiredInventory(Long id);
 
 
-
-    /*
-==============================================================
-                supplier
-====================================================
-
- */
+    //==============  supplier =======================
 
     void addSupplier(Supplier supplier);
 
@@ -58,12 +43,9 @@ public interface AdminServices {
 
     List<Supplier> getAllSupplier();
 
-    /*
-==============================================================
-                purchaseOrder
-====================================================
 
- */
+
+    //==============  purchaseOrder =======================
 
     void addPurchaseOrder(PurchaseOrder purchaseOrder);
 
@@ -73,12 +55,7 @@ public interface AdminServices {
 
     List<PurchaseOrder> getAllPurchaseOrder();
 
-/*
-==============================================================
-                Inventory Batch
-====================================================
-
- */
+    //==============  Inventory Batch =======================
 
     void addInventoryBatch (InventoryBatch inventoryBatch);
 
@@ -89,12 +66,8 @@ public interface AdminServices {
     List<InventoryBatch> getAllInventoryBatch();
 
 
-/*
-==============================================================
-                Product
-====================================================
 
- */
+    //==============  Product =======================
 
     void addProduct(Product product);
 
@@ -105,12 +78,7 @@ public interface AdminServices {
     List<Product> getAllProduct();
 
 
-/*
-==============================================================
-                Category
-====================================================
-
- */
+    //==============  Category =======================
 
     void addCategory (Category category);
 
@@ -120,12 +88,7 @@ public interface AdminServices {
 
     List<Category> getAllCategory();
 
-/*
-==============================================================
-                finance
-====================================================
-
- */
+//==============  finance =======================
 
     HashMap<String,Integer> mapPaymentStatusThisMonth ();
 

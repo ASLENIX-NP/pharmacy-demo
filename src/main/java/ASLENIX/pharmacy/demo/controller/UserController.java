@@ -55,10 +55,6 @@ public class UserController {
 
         return "redirect:/Dashboard";
 
-
-        //DB_NAME=pharmadbdemo;DB_PASSWORD=Nepal1148;DB_PORT=3306;DB_USERNAME=root
-
-
     }
 
     @GetMapping("/Dashboard")

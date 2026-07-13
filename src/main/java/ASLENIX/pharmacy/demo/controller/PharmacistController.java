@@ -30,11 +30,7 @@ public class PharmacistController {
     @Autowired
     PharmacistServicesImpl pharmacistServices;
 
-//========================================================================
-    // mapping for Dashboard
-//========================================================================
-
-
+    //======= mapping for Dashboard =======
 
     @GetMapping("/pharmacist/dashboard")
     String pharmacistDashboard(
@@ -112,13 +108,7 @@ public class PharmacistController {
 
     }
 
-
-
-
-    //========================================================================
-    // mapping for New sales
-//========================================================================
-
+    //======= mapping for New sales =======
 
     @GetMapping("/pharmacist/newSales")
     String pharmacistNewSalesGet(
@@ -419,10 +409,7 @@ public class PharmacistController {
     }
 
 
-//========================================================================
-    // mapping for sales history
-//========================================================================
-
+    //======= mapping for sales history =======
 
     @GetMapping("/pharmacist/salesHistory")
     String pharmacistSalesHistory(
@@ -468,8 +455,6 @@ public class PharmacistController {
 
 
     }
-
-
 
 
 }

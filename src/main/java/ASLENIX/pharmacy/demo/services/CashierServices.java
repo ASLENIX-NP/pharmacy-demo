@@ -20,7 +20,6 @@ public interface CashierServices {
     byte[] exportPDFBill(Long invoiceId) throws IOException;
 
 
-
     Invoice findInvoiceById(Long invoiceId);
 
     void discardInvoice(Long invoiceId);
