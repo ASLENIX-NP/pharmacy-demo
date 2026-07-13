@@ -30,9 +30,7 @@ public class CashierController {
     @Autowired
     CashierServicesImpl cashierServices;
 
-    //========================================================================
-    // mapping for Dashboard
-//========================================================================
+     //======= mapping for Dashboard =======
 
     @GetMapping("/cashier/dashboard")
     String cahierDashboardGet(Model model , HttpSession session){
@@ -57,10 +55,7 @@ public class CashierController {
         return "cashierDashboard";
     }
 
-
-    //========================================================================
-    // mapping for view bill
-//========================================================================
+    //======= mapping for view bill =======
 
     @GetMapping("/cashier/viewBill")
     String cahierViewBillGet(
@@ -185,10 +180,7 @@ public class CashierController {
 
     }
 
-
-    //========================================================================
-    // mapping for Dashboard
-//========================================================================
+      //======= mapping for day closing  =======
 
     @GetMapping("/cashier/dayClosing")
     String cahierDayClosingGet(Model model , HttpSession session){

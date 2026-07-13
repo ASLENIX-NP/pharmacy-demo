@@ -35,18 +35,12 @@ public class PharmacistServicesImpl implements PharmacistServices {
     @Autowired
     InvoiceItemRepository invoiceItemRepository;
 
-     /*
-==============================================================
-            customers
-====================================================
-
-*/
+    //=============== Invoices =================
 
     @Override
     public void createInvoice(Invoice invoice) {
         invoiceRepository.save(invoice);
     }
-
 
     @Override
     public Invoice findInvoiceById(Long id) {
@@ -76,7 +70,6 @@ public class PharmacistServicesImpl implements PharmacistServices {
     public int countPharmacistsInvoiceOfToday(Long id) {
         return invoiceRepository.countActivePrescriptions(id,LocalDate.now());
     }
-
 
     @Override
     public void cancelInvoice(Long id) {
@@ -138,12 +131,8 @@ public class PharmacistServicesImpl implements PharmacistServices {
         return inventoryBatch;
     }
 
-    /*
-==============================================================
-              Invoices items
-====================================================
+    //=============== Invoices items =================
 
-*/
     @Override
     public boolean isInvoiceItemExist(Long itemId) {
         return invoiceItemRepository.existsById(itemId);
@@ -240,13 +229,7 @@ public class PharmacistServicesImpl implements PharmacistServices {
 
     }
 
-
-         /*
-==============================================================
-            InventoryBatch
-====================================================
-
-*/
+       //=============== InventoryBatch =================
 
     @Override
     public List<InventoryBatch> searchAvailableMedicine(String keyword) {
@@ -263,12 +246,7 @@ public class PharmacistServicesImpl implements PharmacistServices {
         return invoiceRepository.existsById(id);
     }
 
-      /*
-==============================================================
-            customers
-====================================================
-
-*/
+    //=============== customers =================
 
     @Override
     public void createAndSetCustomer(Customer customer, Long invoiceId) {

@@ -25,10 +25,7 @@ public class AdminController {
     @Autowired
     private AdminServicesImpl adminServices;
 
-
-
-    // mapping for Dashboard
-
+    //======= mapping for Dashboard =======
 
     @GetMapping("/admin/dashboard")
     public String adminDashboard(Model model, HttpSession session) {
@@ -75,10 +72,7 @@ public class AdminController {
         return "redirect:/admin/dashboard";
     }
 
-//========================================================================
-    // mapping for inventory
-//========================================================================
-
+    //======= mapping for inventory =======
 
     @GetMapping("/admin/inventory")
     public String adminInventory(Model model, HttpSession session) {
@@ -95,10 +89,7 @@ public class AdminController {
         return "adminInventory";
     }
 
-    //========================================================================
-    // mapping for inventory batch
-//========================================================================
-
+    //======= mapping for inventory batch =======
 
     @GetMapping("/admin/inventory/add")
     public String addInventoryGet(Model model, HttpSession session) {
@@ -203,12 +194,7 @@ public class AdminController {
         }
     }
 
-
-    //========================================================================
-    // mapping for product
-//========================================================================
-
-
+     //======= mapping for product =======
 
     @GetMapping("/admin/product/add")
     public String addProductGet(Model model, HttpSession session) {
@@ -287,9 +273,7 @@ public class AdminController {
         }
     }
 
-    // ========================================================================
-    // mapping for Category
-    // ========================================================================
+    //======= mapping for Category =======
 
     @GetMapping("/admin/category/add")
     public String addCategoryGet(Model model, HttpSession session) {
@@ -366,11 +350,8 @@ public class AdminController {
         }
     }
 
-    // ========================================================================
-    // mapping for logistics ;, supplier , purchase
-    // ========================================================================
 
-
+    //======= mapping for logistics =======
     @GetMapping("/admin/logistics")
     public String adminLogistics(Model model, HttpSession session) {
         if (session.getAttribute("activeUser") == null) {
@@ -386,9 +367,8 @@ public class AdminController {
         return "adminLogistics";
     }
 
-    // ========================================================================
-    // mapping for supplier
-    // ========================================================================
+
+     //======= mapping for supplier =======
 
     @GetMapping("/admin/supplier/add")
     public String addSupplierGet(Model model, HttpSession session) {
@@ -466,9 +446,7 @@ public class AdminController {
         }
     }
 
-    // ========================================================================
-    // mapping for purchaseOrder
-    // ========================================================================
+    //======= mapping for purchaseOrder =======
 
     @GetMapping("/admin/purchaseOrder/add")
     public String addPurchaseOrderGet(Model model, HttpSession session) {
@@ -551,10 +529,8 @@ public class AdminController {
         return "redirect:/admin/logistics";
     }
 
-    // ========================================================================
-    // mapping for users
-    // ========================================================================
 
+    //======= mapping for users =======
     @GetMapping("/admin/users")
     public String adminUsers(Model model, HttpSession session) {
         if (session.getAttribute("activeUser") == null) {
@@ -565,6 +541,7 @@ public class AdminController {
         model.addAttribute("currentPage", "users");
         return "adminUser";
     }
+
 
     @GetMapping("/admin/users/add")
     public String addUserPage(Model model, HttpSession session) {
@@ -637,9 +614,8 @@ public class AdminController {
 
     }
 
-    // ========================================================================
-    // mapping for financials
-    // ========================================================================
+    //======= mapping for financials =======
+
     @GetMapping("/admin/financials")
     public String adminFinancials(Model model, HttpSession session) {
         if (session.getAttribute("activeUser") == null) {

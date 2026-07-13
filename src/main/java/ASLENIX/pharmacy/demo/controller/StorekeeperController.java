@@ -18,6 +18,9 @@ public class StorekeeperController {
     @Autowired
     private StorekeeperServices storekeeperServices;
 
+
+    //======= mapping for dashboard =======
+
     @GetMapping("/storekeeper/dashboard")
     public String storekeeperDashboard(Model model, HttpSession session) {
         if (session.getAttribute("activeUser") == null) {
@@ -26,6 +29,9 @@ public class StorekeeperController {
         model.addAttribute("stats", storekeeperServices.getDashboardStats());
         return "storekeeperDashboard";
     }
+
+
+    //======= mapping for inventory =======
 
     @GetMapping("/storekeeper/inventory")
     public String storekeeperInventory(Model model, HttpSession session) {
@@ -87,6 +93,9 @@ public class StorekeeperController {
         }
     }
 
+
+    //======= mapping for productsRacks =======
+
     @GetMapping("/storekeeper/productsRacks")
     public String storekeeperProductsRacks(Model model, HttpSession session) {
         if (session.getAttribute("activeUser") == null) {
@@ -95,8 +104,6 @@ public class StorekeeperController {
         model.addAttribute("products", storekeeperServices.getAllProduct());
         return "storekeeperProductsRacks";
     }
-
-
 
 
     @PostMapping("/storekeeper/productsRacks/edit")
@@ -116,6 +123,9 @@ public class StorekeeperController {
         }
         return "redirect:/storekeeper/productsRacks";
     }
+
+
+    //======= mapping for pullRequests =======
 
     @GetMapping("/storekeeper/pullRequests")
     public String storekeeperPullRequests(Model model, HttpSession session) {
@@ -144,6 +154,9 @@ public class StorekeeperController {
 
         return "redirect:/storekeeper/pullRequests";
     }
+
+
+    //======= mapping for orderDeliver =======
 
     @GetMapping("/storekeeper/orderDeliver")
     public String storekeeperDeliverGet(Model model, HttpSession session) {

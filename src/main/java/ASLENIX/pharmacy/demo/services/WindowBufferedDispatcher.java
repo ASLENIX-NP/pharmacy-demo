@@ -141,8 +141,7 @@ public class WindowBufferedDispatcher {
 
             }
 
-
-                default -> {
+            default -> {
                 return;
             }
         }

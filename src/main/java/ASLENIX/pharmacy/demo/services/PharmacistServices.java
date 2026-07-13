@@ -11,12 +11,7 @@ import java.util.List;
 
 public interface PharmacistServices {
 
-        /*
-==============================================================
-                Invoices
-====================================================
-
- */
+//============== Invoices  =================
 
     void createInvoice(Invoice invoice);
 
@@ -36,12 +31,7 @@ public interface PharmacistServices {
     void checkoutInvoice( Long invoiceId ,HttpServletResponse response) throws IOException;
 
 
-      /*
-==============================================================
-                Invoices items
-====================================================
-
- */
+//============== Invoices  =================
 
     boolean isInvoiceItemExist(Long itemId);
 
@@ -52,13 +42,7 @@ public interface PharmacistServices {
     void clearInvoiceItemList(Long invoiceId);
 
 
-       /*
-==============================================================
-                inventory batches
-====================================================
-
- */
-
+//============== Invoices  =================
 
     List<InventoryBatch> searchAvailableMedicine(String keyword);
 
@@ -67,12 +51,8 @@ public interface PharmacistServices {
 
     boolean isBatchExist(Long id);
 
-    /*
-==============================================================
-            customers
-====================================================
+//============== Invoices  =================
 
-*/
     void  createAndSetCustomer(Customer customer , Long invoiceId);
 
     void  updateCustomer(Customer customer);
