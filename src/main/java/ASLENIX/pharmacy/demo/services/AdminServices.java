@@ -3,6 +3,7 @@ package ASLENIX.pharmacy.demo.services;
 import ASLENIX.pharmacy.demo.model.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface AdminServices {
@@ -126,6 +127,13 @@ public interface AdminServices {
  */
 
     HashMap<String,Integer> mapPaymentStatusThisMonth ();
+
+    LinkedHashMap<String, Double> mapMonthToIncome();
+
+    LinkedHashMap<String,Double> mapMonthToExpense();
+
+    LinkedHashMap<String,Long> mapMonthToQuantity();
+
 
 
 

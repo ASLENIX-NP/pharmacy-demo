@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Controller
@@ -25,9 +26,8 @@ public class AdminController {
     private AdminServicesImpl adminServices;
 
 
-//========================================================================
+
     // mapping for Dashboard
-//========================================================================
 
 
     @GetMapping("/admin/dashboard")
@@ -670,8 +670,19 @@ public class AdminController {
 
         HashMap<String, Integer> billCountByStatus = adminServices.mapPaymentStatusThisMonth();
 
+        LinkedHashMap<String, Double> monthToIncome = adminServices.mapMonthToIncome();
+
+        LinkedHashMap<String,Double> monthToExpense = adminServices.mapMonthToExpense();
+
+        LinkedHashMap<String,Long > monthToQuantity = adminServices.mapMonthToQuantity();
 
         model.addAttribute("purchaseOrderStatusMap",billCountByStatus );
+
+        model.addAttribute("monthToIncomeMap", monthToIncome);
+
+        model.addAttribute("monthToExpenseMap", monthToExpense);
+
+        model.addAttribute("monthToQuantityMap", monthToQuantity);
 
         return "adminFinancials";
     }
