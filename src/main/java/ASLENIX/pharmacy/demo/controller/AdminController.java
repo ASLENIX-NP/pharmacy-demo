@@ -565,6 +565,7 @@ public class AdminController {
         try {
             user.setCreatedAt(java.time.LocalDate.now());
             user.setPassword("123");
+            user.setStatus(UserStatus.PENDING);
             adminServices.addUser(user);
             redirectAttributes.addFlashAttribute("success",
                     "User '" + user.getFirstName() + " " + user.getLastName() + "' created successfully!");
