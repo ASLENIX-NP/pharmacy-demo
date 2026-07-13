@@ -4,6 +4,7 @@ import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.Enums.PaymentStatus;
 import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
 import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
+import ASLENIX.pharmacy.demo.exception.ReportNotUpdatedExcpetion;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
@@ -47,6 +48,10 @@ public class AdminServicesImpl implements AdminServices {
 
     @Autowired
     private FinanceStatsRepository financeStatsRepository;
+
+    @Autowired
+    private FinanceStatsImpl financeStatsImpl ;
+
 
 //  ===================  users  =================
 
@@ -344,6 +349,26 @@ public class AdminServicesImpl implements AdminServices {
         }
 
         return monthToQuantity;
+    }
+
+    @Override
+    public FinanceStats thisMonthsFinanceStats() {
+
+        LocalDate today = LocalDate.now();
+        int currentYear = today.getYear();
+        int currentMonth = today.getMonthValue();
+
+        Optional<FinanceStats> financeStatsOptional = financeStatsRepository.findByYearAndMonth(currentYear,currentMonth);
+
+        if(financeStatsOptional.isPresent()){
+            return financeStatsOptional.get();
+        }
+
+
+        financeStatsImpl.execute();
+
+        return financeStatsRepository.findByYearAndMonth(currentYear,currentMonth).orElseThrow(()->
+                new ReportNotUpdatedExcpetion("The report was not updated"));
     }
 
 
