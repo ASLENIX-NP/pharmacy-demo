@@ -1,5 +1,7 @@
 package ASLENIX.pharmacy.demo.repository;
 
+import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
+import ASLENIX.pharmacy.demo.Enums.StorageZone;
 import ASLENIX.pharmacy.demo.model.InventoryBatch;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -25,14 +27,11 @@ public interface InventoryBatchRepository extends JpaRepository<InventoryBatch, 
     List<InventoryBatch> searchBatches(@Param("keyword") String keyword);
 
     @Query("SELECT ib FROM InventoryBatch ib " +
-            "WHERE ib.batchApprovalStatus = BatchApprovalStatus.APPROVED " +
-            "AND ib.storageZone = StorageZone.MAIN_RACK")
-    List<InventoryBatch> findApprovedMainRackBatches();
-
-    @Query("SELECT ib FROM InventoryBatch ib " +
-            "WHERE ib.batchApprovalStatus = BatchApprovalStatus.APPROVED " +
-            "AND ib.storageZone = StorageZone.BACKROOM_STOCK")
-    List<InventoryBatch> findApprovedBackRoomStockBatches();
-
+            "WHERE ib.batchApprovalStatus = :status " +
+            "AND ib.storageZone = :zone")
+    List<InventoryBatch> findBatchesByStatusAndZone(
+            @Param("status") BatchApprovalStatus status,
+            @Param("zone") StorageZone zone
+    );
 
 }

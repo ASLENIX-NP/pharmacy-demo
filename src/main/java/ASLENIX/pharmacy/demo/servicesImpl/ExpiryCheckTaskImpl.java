@@ -1,6 +1,8 @@
 package ASLENIX.pharmacy.demo.servicesImpl;
 
+import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.Enums.JobType;
+import ASLENIX.pharmacy.demo.Enums.StorageZone;
 import ASLENIX.pharmacy.demo.model.ExpiryDateNotification;
 import ASLENIX.pharmacy.demo.model.InventoryBatch;
 import ASLENIX.pharmacy.demo.model.ScheduleTracker;
@@ -68,9 +70,11 @@ public class ExpiryCheckTaskImpl implements SchedulableTask {
         List<ExpiryDateNotification> notificationsToSave = new LinkedList<>();
         List<ExpiryDateNotification> notificationsToDelete = new LinkedList<>();
 
-        List<InventoryBatch> inventoryBatchActiveList = inventoryBatchRepository.findApprovedMainRackBatches();
+        List<InventoryBatch> inventoryBatchActiveList =
+                inventoryBatchRepository.findBatchesByStatusAndZone(BatchApprovalStatus.APPROVED , StorageZone.MAIN_RACK);
 
-            HashMap<Long ,ExpiryDateNotification> batchIdMapExpiry = mapInventoryIdToNotification();
+
+        HashMap<Long ,ExpiryDateNotification> batchIdMapExpiry = mapInventoryIdToNotification();
 
         for (InventoryBatch inventoryBatch : inventoryBatchActiveList){
 
