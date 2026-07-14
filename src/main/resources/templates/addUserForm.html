@@ -41,7 +41,12 @@
                         </div>
 
                         <div class="card-body p-4">
-                            
+                            <!-- Display Error Messages -->
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                                <i class="bi bi-exclamation-circle me-2"></i>
+                                <strong>Error!</strong> <span th:text="${error}"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
 
                             <form th:action="@{/admin/users/add}" method="post" class="needs-validation" novalidate>
                                 <!-- First Name & Last Name Row -->
