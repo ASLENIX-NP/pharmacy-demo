@@ -4,6 +4,7 @@ import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.Enums.StorageZone;
 import ASLENIX.pharmacy.demo.model.InventoryBatch;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -34,4 +35,17 @@ public interface InventoryBatchRepository extends JpaRepository<InventoryBatch, 
             @Param("zone") StorageZone zone
     );
 
+    List<InventoryBatch> findByBatchApprovalStatus(BatchApprovalStatus status);
+
+
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE InventoryBatch ib " +
+            "SET ib.batchApprovalStatus = :approvedStatus " +"WHERE ib.id IN :ids " +
+            "AND ib.batchApprovalStatus = :pendingStatus")
+    void approveMultipleBatches(
+            @Param("ids") List<Long> ids,
+            @Param("approvedStatus") BatchApprovalStatus approvedStatus,
+            @Param("pendingStatus") BatchApprovalStatus pendingStatus
+    );
 }

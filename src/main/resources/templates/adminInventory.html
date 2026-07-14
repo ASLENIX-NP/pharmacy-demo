@@ -54,7 +54,7 @@
 
         <div class="container-fluid">
 
-             <!-- Display Success Messages -->
+            <!-- Display Success Messages -->
             <div th:if="${success}" class="alert alert-success alert-dismissible fade show mb-4" role="alert">
                 <i class="bi bi-check-circle me-2"></i>
                 <strong>Success!</strong> <span th:text="${success}"></span>
@@ -68,28 +68,29 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
 
-             <!-- Tabs for inventory ,product, category -->
+            <!-- Tabs for active inventory batch and pending approval -->
             <ul class="nav nav-tabs mb-4" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab">
-                        <i class="bi bi-archive-fill me-2"></i>Inventory
+                    <button class="nav-link active" id="active-inventory-tab" data-bs-toggle="tab" data-bs-target="#active-inventory" type="button" role="tab">
+                        <i class="bi bi-archive-fill me-2"></i>Active Inventory Batch
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="product-tab" data-bs-toggle="tab" data-bs-target="#product" type="button" role="tab">
-                        <i class="bi bi-tag me-2"></i>Product
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#category" type="button" role="tab">
-                        <i class="bi bi-boxes me-2"></i>Category
+                    <button class="nav-link position-relative" id="pending-approval-tab" data-bs-toggle="tab" data-bs-target="#pending-approval" type="button" role="tab">
+                        <i class="bi bi-tag me-2"></i>Pending Approval
+                        <!-- Visible only if pendingCount is greater than 0 -->
+                        <span th:if="${pendingCount > 0}" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            <span th:text="${pendingCount}">5</span>
+                            <span class="visually-hidden">pending items</span>
+                        </span>
                     </button>
                 </li>
             </ul>
 
             <div class="tab-content">
-                 <!-- inventory  Table -->
-                <div class="tab-pane fade show active" id="inventory" role="tabpanel">
+
+                <!-- active inventory  Table -->
+                <div class="tab-pane fade show active" id="active-inventory" role="tabpanel">
                     <div class="d-flex gap-2 mb-4">
                         
                         <a th:href="@{/admin/inventory/add}" class="btn btn-success">
@@ -143,118 +144,99 @@
 
                 </div>
 
+                <!-- Pending Approval  Table -->
+                <div class="tab-pane fade " id="pending-approval" role="tabpanel">
 
-                <!-- product Table -->
-
-                <div class="tab-pane fade " id="product" role="tabpanel">
-                    <div class="d-flex gap-2 mb-4">
-                        
-                        <a th:href="@{/admin/product/add}" class="btn btn-success">
-                            <i class="bi bi-plus-circle me-2"></i>Add Product
-                        </a>
-                        
-                        <button class="btn btn-outline-secondary">
-                            <i class="bi bi-download me-2"></i>Export Product
-                        </button>
-                    </div>
-
-                    <div class="card border-0 shadow-sm">
-
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Product Name</th>
-                                            <th>Category</th>
-                                            <th>Rack Location</th>
-                                            <th>minimum Stock Level</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each = "p:${products}">
-                                            <td>[[${p.id}]]</td>
-                                            <td><span class="fw-semibold">[[${p.genericName}]]<br>[[${p.name}]]</span></td>
-                                            <td>[[${p.category.categoryName}]]</td>
-                                            <td>[[${p.rackLocation}]]</td>
-                                            <td>[[${p.minStockLevel}]]</td>
-                                            <td>
-                                                <a th:href="@{/admin/product/edit(id=${p.id})}">
-                                                    <input type="submit" value="Edit" class="btn btn-sm btn-outline-primary"></a>
-
-                                            </td>
-                                        </tr>
-                                       
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                </div>
-
-
-
-                 <!-- Category Table -->
-
-                <div class="tab-pane fade " id="category" role="tabpanel">
-
-                    <div class="d-flex gap-2 mb-4">
-                        
-                        <a th:href="@{/admin/category/add}" class="btn btn-success">
-                            <i class="bi bi-plus-circle me-2"></i>Add Category
-                        </a>
+                <!-- Form Wrapper for Bulk Processing -->
+                <form th:action="@{/admin/inventory/approve}" th:method="patch">
                     
+                    <!-- Action Button Bar Above Table -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-success px-3 shadow-sm">
+                                <i class="bi bi-check-all"></i> Approve Selected
+                            </button>
+                        </div>
                     </div>
 
                     <div class="card border-0 shadow-sm">
-
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <table class="table table-hover mb-0">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Category Name</th>
-                                            <th>VAT %</th>
-                                            <th>Action</th>
+                                            <!-- 🎯 Master Checkbox to Select All -->
+                                            <th style="width: 40px;" class="text-center">
+                                                <input type="checkbox" id="selectAllBatches" class="form-check-input" />
+                                            </th>
+                                            <th>Product Name</th>
+                                            <th>Batch Number</th>
+                                            <th>Stock</th>
+                                            <th>Expiry Date</th>
+                                            <th>Supplier</th>
+                                            <th>Cost Price</th>
+                                            <th>Selling Price</th>
+                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr th:each = "c:${category}">
-                                            <td>[[${c.id}]]</td>
-                                            <td><span class="fw-semibold">[[${c.categoryName}]]</span></td>
-                                            <td>[[${c.vatPercent}]]</td>
-                                            <td>
-                                                <a th:href="@{/admin/category/edit(id=${c.id})}">
-                                                    <input type="submit" value="Edit" class="btn btn-sm btn-outline-primary"></a>
-
+                                        <tr th:each="ib : ${pendingInventoryBatch}">
+                                            <!-- 🎯 Individual Selection Checkbox -->
+                                            <td class="text-center align-middle">
+                                                <input type="checkbox" name="batchIds" th:value="${ib.id}" class="form-check-input batch-checkbox" />
+                                            </td>
+                                            <td class="align-middle">
+                                                <span class="fw-semibold">
+                                                    [[${ib.product.genericName}]]<br>
+                                                    <small class="text-muted">[[${ib.product.name}]]</small>
+                                                </span>
+                                            </td>
+                                            <td class="align-middle">[[${ib.batchNumber}]]</td>
+                                            <td class="align-middle">[[${ib.currentStock}]]</td>
+                                            <td class="align-middle">[[${ib.expiryDate}]]</td>
+                                            <td class="align-middle">[[${ib.purchaseOrder.supplier.companyName}]]</td>
+                                            <td class="align-middle">[[${ib.costPrice}]]</td>
+                                            <td class="align-middle">[[${ib.sellingPrice}]]</td>
+                                            
+                                            <!-- ✏️ Restored Edit Button Column -->
+                                            <td class="text-center align-middle">
+                                                <a th:href="@{/admin/inventory/edit(id=${ib.id})}">
+                                                    <input type="button" value="Edit" class="btn btn-sm btn-outline-primary">
+                                                </a>
                                             </td>
                                         </tr>
-                                       
+                                        <!-- Fallback empty state view if no rows match -->
+                                        <tr th:if="${#lists.isEmpty(pendingInventoryBatch)}">
+                                            <td colspan="9" class="text-center py-4 text-muted">
+                                                <i class="bi bi-clipboard-check display-6 d-block mb-2 text-light"></i>
+                                                No pending batches require validation.
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                </div>
-
+                </form>
             </div>
-            
-            
-            
-        </div>
 
-        
+
+                
+
+            </div>            
+        </div>
     </main>
 </div>
 
 <!-- Footer -->
 <div th:replace="~{footer :: abis-footer}"></div>
+
+<script>
+    document.getElementById('selectAllBatches').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.batch-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+</script>
 
 </body>
 </html>
