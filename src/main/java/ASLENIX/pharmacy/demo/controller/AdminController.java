@@ -48,7 +48,6 @@ public class AdminController {
         model.addAttribute("expiryDateNotificationList" ,expiryDateNotificationList);
 
 
-        model.addAttribute("currentPage", "overview");
         return "adminDashboard";
     }
 
@@ -85,11 +84,8 @@ public class AdminController {
 
         model.addAttribute("category", adminServices.getAllCategory());
 
-        model.addAttribute("currentPage", "inventory");
         return "adminInventory";
     }
-
-    //======= mapping for inventory batch =======
 
     @GetMapping("/admin/inventory/add")
     public String addInventoryGet(Model model, HttpSession session) {
@@ -363,7 +359,6 @@ public class AdminController {
 
         model.addAttribute("supplier", suppliers);
         model.addAttribute("purchaseOrders", purchaseOrders);
-        model.addAttribute("currentPage", "logistics");
         return "adminLogistics";
     }
 
@@ -538,7 +533,6 @@ public class AdminController {
         }
         List<User> users = adminServices.getAllUsers();
         model.addAttribute("users", users);
-        model.addAttribute("currentPage", "users");
         return "adminUser";
     }
 
@@ -622,7 +616,6 @@ public class AdminController {
         if (session.getAttribute("activeUser") == null) {
             return "redirect:/login";
         }
-        model.addAttribute("currentPage", "financials");
 
         HashMap<String, Integer> billCountByStatus = adminServices.mapPaymentStatusThisMonth();
 
