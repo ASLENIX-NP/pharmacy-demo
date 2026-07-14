@@ -53,12 +53,17 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(String.valueOf(id)).get();
+        return userRepository.findById(id).get();
     }
 
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public boolean isEmailTaken(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     /*

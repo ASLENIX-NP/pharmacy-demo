@@ -20,6 +20,7 @@ public interface AdminServices {
 
     List<User> getAllUsers();
 
+    boolean isEmailTaken(String email);
 
     /*
 ==============================================================
