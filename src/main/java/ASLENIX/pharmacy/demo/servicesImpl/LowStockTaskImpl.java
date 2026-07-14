@@ -1,6 +1,8 @@
 package ASLENIX.pharmacy.demo.servicesImpl;
 
+import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.Enums.JobType;
+import ASLENIX.pharmacy.demo.Enums.StorageZone;
 import ASLENIX.pharmacy.demo.model.InventoryBatch;
 import ASLENIX.pharmacy.demo.model.LowStockNotification;
 import ASLENIX.pharmacy.demo.model.Product;
@@ -52,7 +54,9 @@ public class LowStockTaskImpl implements SchedulableTask {
     HashMap<Long,Long> mapProductIdToCurrentStocks(){
         HashMap<Long,Long> productIdToCurrentStocks = new HashMap<>();
 
-        List<InventoryBatch> inventoryBatchList = inventoryBatchRepository.findApprovedMainRackBatches();
+        List<InventoryBatch> inventoryBatchList =
+                inventoryBatchRepository.findBatchesByStatusAndZone(BatchApprovalStatus.APPROVED , StorageZone.MAIN_RACK);
+
 
         for(InventoryBatch inventoryBatch : inventoryBatchList){
             Long productId = inventoryBatch.getProduct().getId();
@@ -70,7 +74,8 @@ public class LowStockTaskImpl implements SchedulableTask {
     HashMap<Long,Long> mapProductIdToStorageStocks(){
         HashMap<Long,Long> productIdToBackRoomStocks = new HashMap<>();
 
-        List<InventoryBatch> inventoryBatchList = inventoryBatchRepository.findApprovedBackRoomStockBatches();
+        List<InventoryBatch> inventoryBatchList =
+                inventoryBatchRepository.findBatchesByStatusAndZone(BatchApprovalStatus.APPROVED,StorageZone.BACKROOM_STOCK);
 
         for(InventoryBatch inventoryBatch : inventoryBatchList){
             Long productId = inventoryBatch.getProduct().getId();
