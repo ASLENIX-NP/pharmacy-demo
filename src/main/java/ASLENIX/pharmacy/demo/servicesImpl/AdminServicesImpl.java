@@ -209,7 +209,13 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public List<InventoryBatch> getInventoryBatchesByStatus(BatchApprovalStatus status) {
-        return inventoryBatchRepository.findBatchesByStatusAndZone(BatchApprovalStatus.APPROVED, StorageZone.BACKROOM_STOCK);
+        return inventoryBatchRepository.findByBatchApprovalStatus(status);
+    }
+
+    @Override
+    public void approveBatches(List<Long> batchIds) {
+
+        inventoryBatchRepository.approveMultipleBatches(batchIds,BatchApprovalStatus.APPROVED,BatchApprovalStatus.PENDING_APPROVAL);
 
     }
 

@@ -1,6 +1,8 @@
 package ASLENIX.pharmacy.demo.services;
 
+import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.model.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -65,7 +67,9 @@ public interface AdminServices {
 
     List<InventoryBatch> getAllInventoryBatch();
 
+    List<InventoryBatch> getInventoryBatchesByStatus(BatchApprovalStatus status);
 
+    void approveBatches(List<Long> batchIds);
 
     //==============  Product =======================
 

@@ -59,10 +59,7 @@ public class InventoryBatch {
     @Enumerated(EnumType.STRING)
     private StorageZone storageZone;
 
-
-
-
-    @PostPersist
+@PostPersist
     public void generateInvoiceNumber() {
         // This runs automatically right after the entity is saved and gets its ID
         this.batchNumber = String.format("BACH-%06d", this.id);
