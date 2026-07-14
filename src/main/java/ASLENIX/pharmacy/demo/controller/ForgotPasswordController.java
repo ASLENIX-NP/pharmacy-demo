@@ -43,6 +43,7 @@ public class ForgotPasswordController {
 
         // We always show the same message whether the email exists or not to prevent email enumeration
         redirectAttributes.addFlashAttribute("success", "If an account with that email exists, a password reset link has been sent.");
+        redirectAttributes.addFlashAttribute("email", email);
         
         return "redirect:/forgot-password";
     }

@@ -22,6 +22,7 @@ public class TokenServiceImpl implements TokenService {
     public PasswordResetToken createToken(User user) {
         // Delete any existing tokens for this user first
         tokenRepository.deleteByUser(user);
+        tokenRepository.flush();
         
         String tokenString = UUID.randomUUID().toString();
         PasswordResetToken token = new PasswordResetToken(tokenString, user);
