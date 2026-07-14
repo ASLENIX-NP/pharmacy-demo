@@ -1,20 +1,18 @@
 package ASLENIX.pharmacy.demo.controller;
 
 import ASLENIX.pharmacy.demo.Enums.*;
-import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
-import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.servicesImpl.AdminServicesImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 @Controller
@@ -251,7 +249,6 @@ public class AdminController {
 
             redirectAttributes.addFlashAttribute("success",
                     "product " + product.getName() + "' created successfully!");
-
 
             return "redirect:/admin/inventory";
         } catch (Exception e) {
@@ -591,12 +588,23 @@ public class AdminController {
         }
 
         try {
+            if (adminServices.isEmailTaken(user.getEmail())) {
+                redirectAttributes.addFlashAttribute("error", "Email is already registered.");
+                return "redirect:/admin/users/add";
+            }
+
             user.setCreatedAt(java.time.LocalDate.now());
             user.setPassword("123");
             user.setStatus(UserStatus.PENDING);
+            user.setPassword(java.util.UUID.randomUUID().toString());
+            user.setStatus(UserStatus.PENDING);
             adminServices.addUser(user);
+
+            PasswordResetToken token = tokenService.createToken(user);
+            emailService.sendPasswordSetupEmail(user.getEmail(), user.getUsername(), token.getToken());
+
             redirectAttributes.addFlashAttribute("success",
-                    "User '" + user.getFirstName() + " " + user.getLastName() + "' created successfully!");
+                    "User '" + user.getFirstName() + " " + user.getLastName() + "' created successfully! An invitation email has been sent.");
             return "redirect:/admin/users";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());

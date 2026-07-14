@@ -1,21 +1,16 @@
 package ASLENIX.pharmacy.demo.servicesImpl;
 
-import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
-import ASLENIX.pharmacy.demo.Enums.PaymentStatus;
-import ASLENIX.pharmacy.demo.Enums.StorageZone;
 import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
-import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
-import ASLENIX.pharmacy.demo.exception.ReportNotUpdatedExcpetion;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.*;
+import java.beans.Transient;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminServicesImpl implements AdminServices {
@@ -71,7 +66,7 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(String.valueOf(id)).get();
+        return userRepository.findById(id).get();
     }
 
     @Override
@@ -79,6 +74,10 @@ public class AdminServicesImpl implements AdminServices {
         return userRepository.findAll(Sort.by(Sort.Direction.ASC,"status"));
     }
 
+    @Override
+    public boolean isEmailTaken(String email) {
+        return userRepository.existsByEmail(email);
+    }
 
 //  ===================  dashboard  =================
 
@@ -305,7 +304,7 @@ public class AdminServicesImpl implements AdminServices {
             }
 
             localDate =  localDate.plusMonths(1);
-            
+
         }
 
         return monthToIncome;
