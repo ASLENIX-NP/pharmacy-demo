@@ -21,8 +21,14 @@
            class="nav-link d-flex align-items-center py-2 px-3 rounded-3">
             <i class="bi bi-bar-chart-fill me-3"></i>
             <span class="fw-semibold">Dashboard</span>
-    </a>
+        </a>
 
+        <a th:href="@{/admin/product}"
+           th:classappend="${currentPage == 'product' ? 'active bg-success shadow-sm' : 'link-dark'}"
+           class="nav-link d-flex align-items-center py-2 px-3 rounded-3">
+            <i class="bi bi-capsule me-3"></i>
+            <span class="fw-semibold">Product</span>
+        </a>
 
         <a th:href="@{/admin/inventory}"
            th:classappend="${currentPage == 'inventory' ? 'active bg-success shadow-sm' : 'link-dark'}"

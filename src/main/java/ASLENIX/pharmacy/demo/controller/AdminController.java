@@ -192,6 +192,19 @@ public class AdminController {
 
      //======= mapping for product =======
 
+    @GetMapping("/admin/product")
+    public String adminProduct(Model model, HttpSession session) {
+        if (session.getAttribute("activeUser") == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("products", adminServices.getAllProduct());
+
+        model.addAttribute("category", adminServices.getAllCategory());
+
+        return "adminProduct";
+    }
+
     @GetMapping("/admin/product/add")
     public String addProductGet(Model model, HttpSession session) {
         if (session.getAttribute("activeUser") == null) {
