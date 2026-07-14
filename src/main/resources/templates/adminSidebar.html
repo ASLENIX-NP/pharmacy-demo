@@ -17,38 +17,39 @@
 <aside th:fragment="abis-sidebar" class="bg-white border-end d-flex flex-column" style="width: 240px; min-height: calc(100vh - 65px);">
     <div class="nav nav-pills flex-column p-3 gap-2">
         <a th:href="@{/admin/dashboard}"
-           th:classappend="${currentPage == 'overview' ? 'active bg-success shadow-sm' : 'link-dark'}"
+           th:classappend="${currentPage == 'dashboard' ? 'active bg-success shadow-sm' : 'link-dark'}"
            class="nav-link d-flex align-items-center py-2 px-3 rounded-3">
-            <span class="me-3">📊</span>
-            <span class="fw-semibold">Overview</span>
-        </a>
+            <i class="bi bi-bar-chart-fill me-3"></i>
+            <span class="fw-semibold">Dashboard</span>
+    </a>
+
 
         <a th:href="@{/admin/inventory}"
            th:classappend="${currentPage == 'inventory' ? 'active bg-success shadow-sm' : 'link-dark'}"
            class="nav-link d-flex align-items-center py-2 px-3 rounded-3">
-            <span class="me-3">📦</span>
+            <i class="bi bi-box me-3"></i>
             <span class="fw-semibold">Inventory</span>
         </a>
 
         <a th:href="@{/admin/logistics}"
            th:classappend="${currentPage == 'logistics' ? 'active bg-success shadow-sm' : 'link-dark'}"
            class="nav-link d-flex align-items-center py-2 px-3 rounded-3">
-            <span class="me-3">🤝</span>
+            <i class="bi bi-truck me-3"></i>
             <span class="fw-semibold">Logistics</span>
         </a>
 
         <a th:href="@{/admin/users}"
            th:classappend="${currentPage == 'users' ? 'active bg-success shadow-sm' : 'link-dark'}"
            class="nav-link d-flex align-items-center py-2 px-3 rounded-3">
-            <span class="me-3">👥</span>
+            <i class="bi bi-people me-3"></i>
             <span class="fw-semibold">Users</span>
         </a>
 
         <a th:href="@{/admin/financials}"
-           th:classappend="${currentPage == 'financials' ? 'active bg-success shadow-sm' : 'link-dark'}"
+           th:classappend="${currentPage == 'finance' ? 'active bg-success shadow-sm' : 'link-dark'}"
            class="nav-link d-flex align-items-center py-2 px-3 rounded-3">
-            <span class="me-3">📈</span>
-            <span class="fw-semibold">Financials</span>
+            <i class="bi bi-cash-coin me-3"></i>
+            <span class="fw-semibold">Finance</span>
         </a>
     </div>
 </aside>
