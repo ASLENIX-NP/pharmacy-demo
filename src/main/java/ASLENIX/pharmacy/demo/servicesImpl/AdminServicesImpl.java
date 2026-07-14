@@ -2,6 +2,7 @@ package ASLENIX.pharmacy.demo.servicesImpl;
 
 import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.Enums.PaymentStatus;
+import ASLENIX.pharmacy.demo.Enums.StorageZone;
 import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
 import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
 import ASLENIX.pharmacy.demo.exception.ReportNotUpdatedExcpetion;
@@ -204,6 +205,12 @@ public class AdminServicesImpl implements AdminServices {
     @Override
     public List<InventoryBatch> getAllInventoryBatch() {
         return inventoryBatchRepository.findAll(Sort.by(Sort.Direction.ASC,"batchNumber"));
+    }
+
+    @Override
+    public List<InventoryBatch> getInventoryBatchesByStatus(BatchApprovalStatus status) {
+        return inventoryBatchRepository.findBatchesByStatusAndZone(BatchApprovalStatus.APPROVED, StorageZone.BACKROOM_STOCK);
+
     }
 
 
