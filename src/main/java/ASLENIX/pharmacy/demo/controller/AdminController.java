@@ -21,6 +21,12 @@ public class AdminController {
     @Autowired
     private AdminServicesImpl adminServices;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private TokenService tokenService;
+
     //======= mapping for Dashboard =======
 
     @GetMapping("/admin/dashboard")
