@@ -1,18 +1,22 @@
 package ASLENIX.pharmacy.demo.controller;
 
 import ASLENIX.pharmacy.demo.Enums.*;
+import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
+import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
+import ASLENIX.pharmacy.demo.services.EmailService;
+import ASLENIX.pharmacy.demo.services.TokenService;
 import ASLENIX.pharmacy.demo.servicesImpl.AdminServicesImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Controller
@@ -600,8 +604,6 @@ public class AdminController {
             }
 
             user.setCreatedAt(java.time.LocalDate.now());
-            user.setPassword("123");
-            user.setStatus(UserStatus.PENDING);
             user.setPassword(java.util.UUID.randomUUID().toString());
             user.setStatus(UserStatus.PENDING);
             adminServices.addUser(user);
@@ -643,13 +645,6 @@ public class AdminController {
 
             return "loginForm";
         }
-
-        String un = String.format("%s%d", user.getFirstName(), user.getId());
-        String initials = String.valueOf(user.getFirstName().charAt(0)) + user.getLastName().charAt(0);
-
-        user.setUsername(un);
-
-        user.setInitials(initials);
 
         adminServices.updateUser(user);
 
