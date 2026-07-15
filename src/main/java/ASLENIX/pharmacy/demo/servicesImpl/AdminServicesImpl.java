@@ -1,16 +1,20 @@
 package ASLENIX.pharmacy.demo.servicesImpl;
 
+import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
+import ASLENIX.pharmacy.demo.Enums.PaymentStatus;
 import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
+import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
+import ASLENIX.pharmacy.demo.exception.ReportNotUpdatedExcpetion;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.*;
 
 @Service
 public class AdminServicesImpl implements AdminServices {
@@ -60,6 +64,12 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public void updateUser(User user) {
+        String un = String.format("%s%d", user.getFirstName(), user.getId());
+        String initials = String.valueOf(user.getFirstName().charAt(0)) + user.getLastName().charAt(0);
+
+        user.setUsername(un);
+
+        user.setInitials(initials);
         userRepository.save(user);
     }
 
@@ -115,7 +125,7 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public void disposeExpiredInventory(Long id) {
-        ExpiryDateNotification  expiryDateNotification=
+        ExpiryDateNotification expiryDateNotification =
                 expiryDateNotificationRepository.findById(id).orElseThrow(
                         ()-> new ExpiryDateNotificationNotFound("This notification do not exists")
                         );
