@@ -3,6 +3,7 @@ package ASLENIX.pharmacy.demo.controller;
 import ASLENIX.pharmacy.demo.Enums.*;
 import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
 import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
+import ASLENIX.pharmacy.demo.exception.UserNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.services.EmailService;
 import ASLENIX.pharmacy.demo.services.TokenService;
@@ -639,17 +640,23 @@ public class AdminController {
     @PostMapping("/admin/users/edit")
     public String editUserPost(
             @ModelAttribute User user,
-            HttpSession session) {
+            HttpSession session,RedirectAttributes redirectAttributes) {
 
         if (session.getAttribute("activeUser") == null) {
 
             return "loginForm";
         }
 
-        adminServices.updateUser(user);
+        try {
+            adminServices.updateUser(user);
+            redirectAttributes.addFlashAttribute("success",
+                    "User '" + user.getFirstName() + " " + user.getLastName() + "' updated successfully");
+            return "redirect:/admin/users";
 
-        return "redirect:/admin/users";
-
+        }catch (UserNotFoundException e){
+            redirectAttributes.addFlashAttribute("error",  e.getMessage());
+            return "redirect:/admin/users";
+        }
     }
 
     //======= mapping for financials =======

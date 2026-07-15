@@ -5,6 +5,7 @@ import ASLENIX.pharmacy.demo.Enums.PaymentStatus;
 import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
 import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
 import ASLENIX.pharmacy.demo.exception.ReportNotUpdatedExcpetion;
+import ASLENIX.pharmacy.demo.exception.UserNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -62,14 +64,47 @@ public class AdminServicesImpl implements AdminServices {
 
     }
 
+    private String generateUserName(String firstName, Long userId) {
+        if (firstName == null) {
+            firstName = "";
+        }
+
+        String combined = firstName + (userId != null ? userId : "");
+
+        return combined.replaceAll("[^a-zA-Z0-9]", "_").toLowerCase();
+    }
+
+    private String generateInitials(String firstName, String lastName) {
+        StringBuilder initials = new StringBuilder();
+
+        if (firstName != null && !firstName.trim().isEmpty()) {
+            initials.append(firstName.trim().charAt(0));
+        }
+
+        if (lastName != null && !lastName.trim().isEmpty()) {
+            initials.append(lastName.trim().charAt(0));
+        }
+
+        return initials.toString().toUpperCase();
+    }
+
     @Override
     public void updateUser(User user) {
-        String un = String.format("%s%d", user.getFirstName(), user.getId());
-        String initials = String.valueOf(user.getFirstName().charAt(0)) + user.getLastName().charAt(0);
 
-        user.setUsername(un);
+        Optional<User> oldUserOpt = userRepository.findById(user.getId());
+        if(oldUserOpt.isEmpty()){
+            throw  new UserNotFoundException("Updated failed User Do not exists ");
+        }
 
-        user.setInitials(initials);
+        User oldUser = oldUserOpt.get();
+
+
+        user.setUsername(generateUserName(user.getFirstName(), user.getId()));
+        user.setInitials(generateInitials(user.getFirstName(),user.getLastName()));
+        user.setPassword(oldUser.getPassword());
+        user.setCreatedAt(oldUser.getCreatedAt());
+
+
         userRepository.save(user);
     }
 
