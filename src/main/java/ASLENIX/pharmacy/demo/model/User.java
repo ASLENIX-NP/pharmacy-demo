@@ -37,7 +37,7 @@ public class User {
 
 
     @PostPersist
-    public void generateInvoiceNumber() {
+    public void postEditData() {
         // This runs automatically right after the entity is saved and gets its ID
         this.username = String.format("%s%d", firstName, this.id) ;
         this.initials = String.valueOf(firstName.charAt(0)) + lastName.charAt(0);
