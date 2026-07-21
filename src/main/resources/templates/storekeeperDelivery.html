@@ -54,14 +54,14 @@
                 <p th:text="${errorMessage}"></p>
             </div>
 
-            <table class="table">
+            <table id="deliveryTable" class="table">
                 <thead>
                 <tr>
-                    <th>Purchase ID</th>
-                    <th>Bill Number </th>
-                    <th>Company</th>
-                    <th>Amount</th>
-                    <th>Status</th>
+                    <th onclick="sortDeliveryTable(0)" style="cursor:pointer;">Purchase ID</th>
+                    <th onclick="sortDeliveryTable(1)" style="cursor:pointer;">Bill Number</th>
+                    <th onclick="sortDeliveryTable(2)" style="cursor:pointer;">Company</th>
+                    <th onclick="sortDeliveryTable(3)" style="cursor:pointer;">Amount</th>
+                    <th onclick="sortDeliveryTable(4)" style="cursor:pointer;">Status</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -88,5 +88,53 @@
 
 <!-- Footer -->
 <div th:replace="~{footer :: abis-footer}"></div>
+<script>
+
+    let deliverySort = {};
+
+    function sortDeliveryTable(columnIndex) {
+
+        const table = document.getElementById("deliveryTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        deliverySort[columnIndex] = !deliverySort[columnIndex];
+
+        rows.sort((a, b) => {
+
+            let x = a.cells[columnIndex].innerText.trim();
+            let y = b.cells[columnIndex].innerText.trim();
+
+            // Numeric sorting
+            let numX = parseFloat(x.replace(/,/g, ""));
+            let numY = parseFloat(y.replace(/,/g, ""));
+
+            if (!isNaN(numX) && !isNaN(numY)) {
+                return deliverySort[columnIndex]
+                    ? numX - numY
+                    : numY - numX;
+            }
+
+            // Date sorting (kept for consistency if you later add a date column)
+            let dateX = Date.parse(x);
+            let dateY = Date.parse(y);
+
+            if (!isNaN(dateX) && !isNaN(dateY)) {
+                return deliverySort[columnIndex]
+                    ? dateX - dateY
+                    : dateY - dateX;
+            }
+
+            // Text sorting
+            return deliverySort[columnIndex]
+                ? x.localeCompare(y)
+                : y.localeCompare(x);
+
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+</script>
 </body>
 </html>

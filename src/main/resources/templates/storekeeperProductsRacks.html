@@ -55,12 +55,12 @@
                 <p th:text="${errorMessage}"></p>
             </div>
 
-            <table class="table">
+            <table id="rackTable" class="table">
                 <thead>
                 <tr>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Current Rack Location</th>
+                    <th onclick="sortRackTable(0)" style="cursor:pointer;">Product ID</th>
+                    <th onclick="sortRackTable(1)" style="cursor:pointer;">Product Name</th>
+                    <th onclick="sortRackTable(2)" style="cursor:pointer;">Current Rack Location</th>
                     <th>Update Rack Location</th>
                 </tr>
                 </thead>
@@ -87,5 +87,41 @@
 
 <!-- Footer -->
 <div th:replace="~{footer :: abis-footer}"></div>
+<script>
+
+    let rackSort = {};
+
+    function sortRackTable(columnIndex) {
+
+        const table = document.getElementById("rackTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        rackSort[columnIndex] = !rackSort[columnIndex];
+
+        rows.sort((a, b) => {
+
+            let x = a.cells[columnIndex].innerText.trim();
+            let y = b.cells[columnIndex].innerText.trim();
+
+            let numX = parseFloat(x);
+            let numY = parseFloat(y);
+
+            if (!isNaN(numX) && !isNaN(numY)) {
+                return rackSort[columnIndex]
+                    ? numX - numY
+                    : numY - numX;
+            }
+
+            return rackSort[columnIndex]
+                ? x.localeCompare(y)
+                : y.localeCompare(x);
+
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+</script>
 </body>
 </html>
