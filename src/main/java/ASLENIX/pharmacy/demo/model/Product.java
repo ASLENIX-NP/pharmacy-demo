@@ -1,12 +1,6 @@
 package ASLENIX.pharmacy.demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,7 +9,6 @@ import lombok.ToString;
 @Table (name = "product_tbl")
 @Setter
 @Getter
-@ToString
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +16,7 @@ public class Product {
     private String name;
     private String genericName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) // Explicitly set to LAZY
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 

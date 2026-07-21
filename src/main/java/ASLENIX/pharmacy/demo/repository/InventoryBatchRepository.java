@@ -3,6 +3,7 @@ package ASLENIX.pharmacy.demo.repository;
 import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.Enums.StorageZone;
 import ASLENIX.pharmacy.demo.model.InventoryBatch;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,7 +36,12 @@ public interface InventoryBatchRepository extends JpaRepository<InventoryBatch, 
             @Param("zone") StorageZone zone
     );
 
-    List<InventoryBatch> findByBatchApprovalStatus(BatchApprovalStatus status);
+    @Query("SELECT b FROM InventoryBatch b " +
+            "JOIN FETCH b.product p " +
+            "JOIN FETCH b.purchaseOrder po " +
+            "LEFT JOIN FETCH po.supplier " +
+            "WHERE b.batchApprovalStatus = :status")
+    List<InventoryBatch> findByBatchApprovalStatus(@Param("status") BatchApprovalStatus status);
 
 
 
