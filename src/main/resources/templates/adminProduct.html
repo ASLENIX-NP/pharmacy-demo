@@ -121,8 +121,10 @@
                                             <td>[[${p.rackLocation}]]</td>
                                             <td>[[${p.minStockLevel}]]</td>
                                             <td>
-                                                <a th:href="@{/admin/product/edit(id=${p.id})}">
-                                                    <input type="submit" value="Edit" class="btn btn-sm btn-outline-primary"></a>
+                                                <form th:action="@{/admin/product/edit}" method="get">
+                                                    <input type="hidden" name="id" th:value="${p.id}" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-primary">Edit</button>
+                                                </form>
 
                                             </td>
                                         </tr>
