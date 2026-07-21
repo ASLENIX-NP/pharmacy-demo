@@ -67,15 +67,15 @@
                <a th:href="@{/storekeeper/inventory/add}" class="btn btn-success">
                             <i class="bi bi-plus-circle me-2"></i> Add Inventory
                         </a>
-            <table class="table">
+            <table id="liveInventoryTable" class="table">
                 <thead>
                 <tr>
-                    <th>Batch ID</th>
-                    <th>Product Name</th>
-                    <th>Expiry Date</th>
-                    <th>Quantity</th>
-                    <th>Status</th>
-                    <th>Zone</th>
+                    <th onclick="sortLiveInventoryTable(0)" style="cursor:pointer;">Batch ID</th>
+                    <th onclick="sortLiveInventoryTable(1)" style="cursor:pointer;">Product Name</th>
+                    <th onclick="sortLiveInventoryTable(2)" style="cursor:pointer;">Expiry Date</th>
+                    <th onclick="sortLiveInventoryTable(3)" style="cursor:pointer;">Quantity</th>
+                    <th onclick="sortLiveInventoryTable(4)" style="cursor:pointer;">Status</th>
+                    <th onclick="sortLiveInventoryTable(5)" style="cursor:pointer;">Zone</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -95,5 +95,53 @@
 
 <!-- Footer -->
 <div th:replace="~{footer :: abis-footer}"></div>
+<script>
+
+    let liveInventorySort = {};
+
+    function sortLiveInventoryTable(columnIndex) {
+
+        const table = document.getElementById("liveInventoryTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        liveInventorySort[columnIndex] = !liveInventorySort[columnIndex];
+
+        rows.sort((a, b) => {
+
+            let x = a.cells[columnIndex].innerText.trim();
+            let y = b.cells[columnIndex].innerText.trim();
+
+            // Number sorting
+            let numX = parseFloat(x);
+            let numY = parseFloat(y);
+
+            if (!isNaN(numX) && !isNaN(numY)) {
+                return liveInventorySort[columnIndex]
+                    ? numX - numY
+                    : numY - numX;
+            }
+
+            // Date sorting
+            let dateX = Date.parse(x);
+            let dateY = Date.parse(y);
+
+            if (!isNaN(dateX) && !isNaN(dateY)) {
+                return liveInventorySort[columnIndex]
+                    ? dateX - dateY
+                    : dateY - dateX;
+            }
+
+            // Text sorting
+            return liveInventorySort[columnIndex]
+                ? x.localeCompare(y)
+                : y.localeCompare(x);
+
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+</script>
 </body>
 </html>
