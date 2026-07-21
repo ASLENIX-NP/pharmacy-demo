@@ -282,8 +282,9 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public List<Product> getAllProduct() {
-        return productRepository.findAll(Sort.by(Sort.Direction.ASC,"name"));
+        return productRepository.findAllWithCategory();
     }
+
 
     //  ===================  Category  =================
     @Override
