@@ -4,6 +4,7 @@ import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.model.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -81,6 +82,8 @@ public interface AdminServices {
     Product getProductById(Long id);
 
     List<Product> getAllProduct();
+
+    byte[] exportProductsInExcel( String username) throws IOException;
 
 
     //==============  Category =======================
