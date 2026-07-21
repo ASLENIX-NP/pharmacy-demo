@@ -3,6 +3,7 @@ package ASLENIX.pharmacy.demo.controller;
 import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.services.StorekeeperServices;
+import ASLENIX.pharmacy.demo.Enums.UserRole;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +18,19 @@ public class StorekeeperController {
 
     @Autowired
     private StorekeeperServices storekeeperServices;
+    private boolean isNotStoreKeeper(HttpSession session) {
+        User activeUser = (User) session.getAttribute("activeUser");
+
+        return activeUser == null ||
+                activeUser.getRole() != UserRole.STOREKEEPER;
+    }
 
 
     //======= mapping for dashboard =======
 
     @GetMapping("/storekeeper/dashboard")
     public String storekeeperDashboard(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
         model.addAttribute("stats", storekeeperServices.getDashboardStats());
@@ -35,7 +42,7 @@ public class StorekeeperController {
 
     @GetMapping("/storekeeper/inventory")
     public String storekeeperInventory(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
         model.addAttribute("inventoryBatches", storekeeperServices.getAllInventoryBatch());
@@ -45,7 +52,7 @@ public class StorekeeperController {
 
     @GetMapping("/storekeeper/inventory/add")
     public String storekeeperAddStockLedgerGet(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
 
@@ -66,7 +73,7 @@ public class StorekeeperController {
             @ModelAttribute InventoryBatch inventoryBatch,
             HttpSession session,Model model,RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
 
@@ -98,7 +105,7 @@ public class StorekeeperController {
 
     @GetMapping("/storekeeper/productsRacks")
     public String storekeeperProductsRacks(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
         model.addAttribute("products", storekeeperServices.getAllProduct());
@@ -111,7 +118,7 @@ public class StorekeeperController {
             @RequestParam("productId") Long productId,
             @RequestParam("rackLocation") String rackLocation,
             HttpSession session, RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
         try {
@@ -129,7 +136,7 @@ public class StorekeeperController {
 
     @GetMapping("/storekeeper/pullRequests")
     public String storekeeperPullRequests(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
         model.addAttribute("pullRequests", storekeeperServices.getAllInventoryBatch().stream()
@@ -142,7 +149,7 @@ public class StorekeeperController {
     public String confirmRemoval(
             @RequestParam("batchId") Long batchId,
             HttpSession session, RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
         try {
@@ -160,7 +167,7 @@ public class StorekeeperController {
 
     @GetMapping("/storekeeper/orderDeliver")
     public String storekeeperDeliverGet(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
 
@@ -173,7 +180,7 @@ public class StorekeeperController {
     public String storekeeperDeliverPost(
             @RequestParam("orderId") Long purchaseId,
             HttpSession session, RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotStoreKeeper(session)) {
             return "redirect:/login";
         }
         try {
