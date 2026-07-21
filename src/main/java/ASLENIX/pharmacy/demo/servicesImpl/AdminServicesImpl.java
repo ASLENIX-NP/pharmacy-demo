@@ -9,11 +9,12 @@ import ASLENIX.pharmacy.demo.exception.UserNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
+import ASLENIX.pharmacy.demo.utils.ProductExcelExporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -283,6 +284,15 @@ public class AdminServicesImpl implements AdminServices {
     @Override
     public List<Product> getAllProduct() {
         return productRepository.findAllWithCategory();
+    }
+
+    @Override
+    public byte[] exportProductsInExcel( String username) throws IOException {
+
+            List<Product> productList = productRepository.findAllWithCategory();
+            ProductExcelExporter exporter = new ProductExcelExporter();
+            return exporter.generateExcelOfProducts(productList, username);
+
     }
 
 

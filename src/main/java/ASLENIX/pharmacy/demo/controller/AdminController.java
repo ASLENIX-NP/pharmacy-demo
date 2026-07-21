@@ -10,12 +10,17 @@ import ASLENIX.pharmacy.demo.services.TokenService;
 import ASLENIX.pharmacy.demo.servicesImpl.AdminServicesImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -255,9 +260,7 @@ public class AdminController {
         }
 
         try {
-
             adminServices.addProduct(product);
-
             redirectAttributes.addFlashAttribute("success",
                     "product " + product.getName() + "' created successfully!");
 
@@ -265,7 +268,7 @@ public class AdminController {
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
             model.addAttribute("currentPage", "users");
-            return "redirect:/admin/inventory";
+            return "redirect:/admin/product";
         }
     }
 
@@ -293,7 +296,8 @@ public class AdminController {
             HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
         if (session.getAttribute("activeUser") == null) {
-            return "redirect:/login";
+            return "redirect:/admin/product";
+
         }
 
         try {
@@ -307,8 +311,34 @@ public class AdminController {
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
             model.addAttribute("currentPage", "users");
-            return "redirect:/admin/inventory";
+            return "redirect:/admin/product";
+
         }
+    }
+
+    @GetMapping("/admin/product/export")
+    Object productExportInExcel(
+            HttpSession session,RedirectAttributes redirectAttributes) {
+
+        if (session.getAttribute("activeUser") == null) {
+            return "redirect:/login";
+        }
+        try {
+            User user = (User) session.getAttribute("activeUser");
+            byte[] productsInExcelByte = adminServices.exportProductsInExcel(user.getUsername());
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "inline; filename=products_" + user.getUsername()+ "_"+ LocalDateTime.now() + ".xlsx")
+                    .body(productsInExcelByte);
+        }
+        catch (IOException e){
+            redirectAttributes.addFlashAttribute("error", "Error occurred while generating Excel file");
+            return "redirect:/admin/product";
+
+        }
+
     }
 
     //======= mapping for Category =======
