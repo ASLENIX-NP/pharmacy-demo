@@ -84,7 +84,7 @@ public class PharmacistController {
     }
 
     @GetMapping("/pharmacist/dashboard/invoice/print")
-    Object pharmacistDashboard(
+    Object pharmacistInvoicePrint(
             @RequestParam(value = "invoiceId") Long invoiceId,
             Model model,HttpSession session,RedirectAttributes redirectAttributes) {
 
