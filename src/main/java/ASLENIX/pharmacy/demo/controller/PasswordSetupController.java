@@ -51,6 +51,15 @@ public class PasswordSetupController {
             model.addAttribute("token", token);
             return "set-password";
         }
+        String passwordRegex =
+                "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}$";
+
+        if (!password.matches(passwordRegex)) {
+            model.addAttribute("error",
+                    "Password must be at least 6 characters long and contain at least one letter, one number, and one special character.");
+            model.addAttribute("token", token);
+            return "set-password";
+        }
 
         Optional<PasswordResetToken> tokenOpt = tokenService.validateToken(token);
         if (tokenOpt.isEmpty()) {

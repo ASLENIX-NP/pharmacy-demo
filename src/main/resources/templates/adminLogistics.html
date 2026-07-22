@@ -94,18 +94,18 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover mb-0">
+                                <table id="supplierTable" class="table table-hover mb-0">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>Supplier</th>
-                                            <th>Company</th>
-                                            <th>Address</th>
-                                            <th>PAN VAT</th>
-                                            <th>Contact</th>
-                                            <th>Email</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
+                                    <tr>
+                                        <th onclick="sortSupplierTable(0)" style="cursor:pointer;">Supplier</th>
+                                        <th onclick="sortSupplierTable(1)" style="cursor:pointer;">Company</th>
+                                        <th onclick="sortSupplierTable(2)" style="cursor:pointer;">Address</th>
+                                        <th onclick="sortSupplierTable(3)" style="cursor:pointer;">PAN VAT</th>
+                                        <th onclick="sortSupplierTable(4)" style="cursor:pointer;">Contact</th>
+                                        <th onclick="sortSupplierTable(5)" style="cursor:pointer;">Email</th>
+                                        <th onclick="sortSupplierTable(6)" style="cursor:pointer;">Status</th>
+                                        <th>Action</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
                                         <tr th:each = "s:${supplier}">
@@ -144,17 +144,17 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover mb-0">
+                                <table id="purchaseOrderTable" class="table table-hover mb-0">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>PO Number</th>
-                                            <th>Bill Number</th>
-                                            <th>Supplier Company</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
-                                        </tr>
+                                    <tr>
+                                        <th onclick="sortPurchaseTable(0)" style="cursor:pointer;">PO Number</th>
+                                        <th onclick="sortPurchaseTable(1)" style="cursor:pointer;">Bill Number</th>
+                                        <th onclick="sortPurchaseTable(2)" style="cursor:pointer;">Supplier Company</th>
+                                        <th onclick="sortPurchaseTable(3)" style="cursor:pointer;">Amount</th>
+                                        <th onclick="sortPurchaseTable(4)" style="cursor:pointer;">Status</th>
+                                        <th onclick="sortPurchaseTable(5)" style="cursor:pointer;">Date</th>
+                                        <th>Action</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
                                         <tr  th:each = "po:${purchaseOrders}">
@@ -184,6 +184,76 @@
 
 <!-- Footer -->
 <div th:replace="~{footer :: abis-footer}"></div>
+<script>
 
+    let supplierSort = {};
+    let purchaseSort = {};
+
+    function sortSupplierTable(columnIndex) {
+
+        const table = document.getElementById("supplierTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        supplierSort[columnIndex] = !supplierSort[columnIndex];
+
+        rows.sort((a, b) => {
+
+            let x = a.cells[columnIndex].innerText.trim();
+            let y = b.cells[columnIndex].innerText.trim();
+
+            let numX = parseFloat(x);
+            let numY = parseFloat(y);
+
+            if (!isNaN(numX) && !isNaN(numY)) {
+                return supplierSort[columnIndex] ? numX - numY : numY - numX;
+            }
+
+            return supplierSort[columnIndex]
+                ? x.localeCompare(y)
+                : y.localeCompare(x);
+
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+    function sortPurchaseTable(columnIndex) {
+
+        const table = document.getElementById("purchaseOrderTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        purchaseSort[columnIndex] = !purchaseSort[columnIndex];
+
+        rows.sort((a, b) => {
+
+            let x = a.cells[columnIndex].innerText.replace("Rs.", "").trim();
+            let y = b.cells[columnIndex].innerText.replace("Rs.", "").trim();
+
+            let numX = parseFloat(x);
+            let numY = parseFloat(y);
+
+            if (!isNaN(numX) && !isNaN(numY)) {
+                return purchaseSort[columnIndex] ? numX - numY : numY - numX;
+            }
+
+            let dateX = Date.parse(x);
+            let dateY = Date.parse(y);
+
+            if (!isNaN(dateX) && !isNaN(dateY)) {
+                return purchaseSort[columnIndex] ? dateX - dateY : dateY - dateX;
+            }
+
+            return purchaseSort[columnIndex]
+                ? x.localeCompare(y)
+                : y.localeCompare(x);
+
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+</script>
 </body>
 </html>

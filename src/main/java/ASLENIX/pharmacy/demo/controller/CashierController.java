@@ -2,6 +2,7 @@ package ASLENIX.pharmacy.demo.controller;
 
 import ASLENIX.pharmacy.demo.Enums.InvoiceStatus;
 import ASLENIX.pharmacy.demo.Enums.PaymentMethod;
+import ASLENIX.pharmacy.demo.Enums.UserRole;
 import ASLENIX.pharmacy.demo.dataTransferObject.DayEndSummaryDTO;
 import ASLENIX.pharmacy.demo.exception.InsufficientPaymentException;
 import ASLENIX.pharmacy.demo.exception.InvoiceNotFoundException;
@@ -29,12 +30,17 @@ public class CashierController {
 
     @Autowired
     CashierServicesImpl cashierServices;
+    private boolean isNotCashier(HttpSession session) {
+        User activeUser = (User) session.getAttribute("activeUser");
 
+        return activeUser == null ||
+                activeUser.getRole() != UserRole.CASHIER;
+    }
      //======= mapping for Dashboard =======
 
     @GetMapping("/cashier/dashboard")
     String cahierDashboardGet(Model model , HttpSession session){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotCashier(session)) {
             return "redirect:/login";
         }
 
@@ -61,7 +67,7 @@ public class CashierController {
     String cahierViewBillGet(
             @RequestParam(value = "invoiceId", required = false) Long invoiceId,
             Model model ,RedirectAttributes redirectAttributes ,HttpSession session){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotCashier(session)) {
             return "redirect:/login";
         }
 
@@ -105,10 +111,9 @@ public class CashierController {
             @RequestParam("amountPaid") Double amountPaid,
              Model model, RedirectAttributes redirectAttributes , HttpSession session
     ){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotCashier(session)) {
             return "redirect:/login";
         }
-
         try {
             User cashier  = (User) session.getAttribute("activeUser");
             cashierServices.completePayment(invoiceId,paymentMethod,amountPaid, cashier);
@@ -133,10 +138,9 @@ public class CashierController {
             @RequestParam("invoiceId") Long invoiceId,
             Model model, RedirectAttributes redirectAttributes , HttpSession session
     ){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotCashier(session)) {
             return "redirect:/login";
         }
-
         try {
 
             cashierServices.discardInvoice(invoiceId);
@@ -160,7 +164,7 @@ public class CashierController {
             @RequestParam(value = "invoiceId") Long invoiceId,
             Model model,HttpSession session,RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotCashier(session)) {
             return "redirect:/login";
         }
         try {
@@ -184,7 +188,7 @@ public class CashierController {
 
     @GetMapping("/cashier/dayClosing")
     String cahierDayClosingGet(Model model , HttpSession session){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotCashier(session)) {
             return "redirect:/login";
         }
 
@@ -205,7 +209,7 @@ public class CashierController {
 
     @GetMapping("/cashier/dayClosing/print")
     Object cahierDayClosingPrintReportGet(Model model , HttpSession session){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotCashier(session)) {
             return "redirect:/login";
         }
 

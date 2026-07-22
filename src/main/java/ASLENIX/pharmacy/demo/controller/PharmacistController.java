@@ -2,6 +2,7 @@ package ASLENIX.pharmacy.demo.controller;
 
 import ASLENIX.pharmacy.demo.Enums.InvoiceStatus;
 import ASLENIX.pharmacy.demo.Enums.PaymentMethod;
+import ASLENIX.pharmacy.demo.Enums.UserRole;
 import ASLENIX.pharmacy.demo.exception.*;
 import ASLENIX.pharmacy.demo.model.Customer;
 import ASLENIX.pharmacy.demo.model.User;
@@ -29,6 +30,12 @@ public class PharmacistController {
 
     @Autowired
     PharmacistServicesImpl pharmacistServices;
+    private boolean isNotPharmacist(HttpSession session) {
+        User activeUser = (User) session.getAttribute("activeUser");
+
+        return activeUser == null ||
+                activeUser.getRole() != UserRole.PHARMACIST;
+    }
 
     //======= mapping for Dashboard =======
 
@@ -37,7 +44,7 @@ public class PharmacistController {
             @RequestParam(value = "invoiceId", required = false) Long invoiceId,
             Model model, HttpSession session){
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -88,7 +95,7 @@ public class PharmacistController {
             @RequestParam(value = "invoiceId") Long invoiceId,
             Model model,HttpSession session,RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
         try {
@@ -114,7 +121,7 @@ public class PharmacistController {
     String pharmacistNewSalesGet(
             @RequestParam(value = "invoiceId", required = false) Long invoiceId,
             Model model,HttpSession session){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -141,7 +148,7 @@ public class PharmacistController {
     String pharmacistCancelInvoiceGet(
             @RequestParam(value = "invoiceId") Long invoiceId,
             Model model, HttpSession session){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -154,7 +161,7 @@ public class PharmacistController {
 
     @PostMapping("/pharmacist/newSales/invoice/generate")
     String pharmacistGenerateInvoicePost(Model model, HttpSession session){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -178,7 +185,7 @@ public class PharmacistController {
             Model model, HttpSession session,RedirectAttributes redirectAttributes){
 
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -206,7 +213,7 @@ public class PharmacistController {
             HttpSession session, Model model, RedirectAttributes redirectAttributes){
 
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -226,7 +233,7 @@ public class PharmacistController {
             @RequestParam("quantity") Long quantity
             ,Model model, HttpSession session, RedirectAttributes redirectAttributes){
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -253,7 +260,7 @@ public class PharmacistController {
             ,Model model, HttpSession session, RedirectAttributes redirectAttributes){
 
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -275,7 +282,7 @@ public class PharmacistController {
             @RequestParam("customerId") Long customerId,
             @RequestParam("invoiceId") Long invoiceId,
             HttpSession session,RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -301,9 +308,8 @@ public class PharmacistController {
             @RequestParam("invoiceId")Long invoiceId,
             HttpSession session, RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
-
         }
 
         try{
@@ -322,7 +328,7 @@ public class PharmacistController {
             @ModelAttribute Customer customer,
             @RequestParam("invoiceId") Long invoiceId,
             HttpSession session , RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -346,7 +352,7 @@ public class PharmacistController {
             @RequestParam(value = "invoiceId") Long invoiceId,
             RedirectAttributes redirectAttributes,HttpSession session){
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -366,7 +372,7 @@ public class PharmacistController {
             RedirectAttributes redirectAttributes,
             HttpSession session){
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -387,7 +393,7 @@ public class PharmacistController {
             RedirectAttributes redirectAttributes,
             HttpSession session, HttpServletResponse response){
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 
@@ -417,7 +423,7 @@ public class PharmacistController {
             @RequestParam(value = "endDate" , required = false) LocalDate endDate,
             Model model,HttpSession session,RedirectAttributes redirectAttributes){
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotPharmacist(session)) {
             return "redirect:/login";
         }
 

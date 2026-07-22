@@ -130,15 +130,26 @@
 		<div class="card border-0 shadow-sm rounded-4">
 			<div class="card-body p-0">
 				<div class="table-responsive">
-					<table class="table table-hover align-middle mb-0">
-						<thead class="table-light text-uppercase fs-7 fw-bold text-muted">
-							<tr>
-								<th class="ps-4" style="width: 15%;">Invoice No.</th>
-								<th style="width: 25%;">Customer</th>
-								<th style="width: 20%;">Pharmacist</th>
-								<th style="width: 15%;">Date</th>
-							</tr>
-						</thead>
+                    <table id="cashierDashboardTable" class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-uppercase fs-7 fw-bold text-muted">
+                        <tr>
+                            <th class="ps-4" style="width:15%; cursor:pointer;" onclick="sortCashierDashboardTable(0)">
+                                Invoice No.
+                            </th>
+
+                            <th style="width:25%; cursor:pointer;" onclick="sortCashierDashboardTable(1)">
+                                Customer
+                            </th>
+
+                            <th style="width:20%; cursor:pointer;" onclick="sortCashierDashboardTable(2)">
+                                Pharmacist
+                            </th>
+
+                            <th style="width:15%; cursor:pointer;" onclick="sortCashierDashboardTable(3)">
+                                Date
+                            </th>
+                        </tr>
+                        </thead>
 						<tbody class="fs-6">
 							<tr th:each="invoice:${invoicePaymentPending}">
 
@@ -182,5 +193,53 @@
 
 <!-- Footer -->
 <div th:replace="~{footer :: abis-footer}"></div>
+<script>
+
+    let cashierDashboardSort = {};
+
+    function sortCashierDashboardTable(columnIndex) {
+
+        const table = document.getElementById("cashierDashboardTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        cashierDashboardSort[columnIndex] = !cashierDashboardSort[columnIndex];
+
+        rows.sort((a, b) => {
+
+            let x = a.cells[columnIndex].innerText.trim();
+            let y = b.cells[columnIndex].innerText.trim();
+
+            // Number sorting
+            let numX = parseFloat(x);
+            let numY = parseFloat(y);
+
+            if (!isNaN(numX) && !isNaN(numY)) {
+                return cashierDashboardSort[columnIndex]
+                    ? numX - numY
+                    : numY - numX;
+            }
+
+            // Date sorting
+            let dateX = Date.parse(x);
+            let dateY = Date.parse(y);
+
+            if (!isNaN(dateX) && !isNaN(dateY)) {
+                return cashierDashboardSort[columnIndex]
+                    ? dateX - dateY
+                    : dateY - dateX;
+            }
+
+            // Text sorting
+            return cashierDashboardSort[columnIndex]
+                ? x.localeCompare(y)
+                : y.localeCompare(x);
+
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+</script>
 </body>
 </html>
