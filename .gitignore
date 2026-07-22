@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Local developer startup script (contains machine-specific secrets)
+run-local-gitignore.ps1
+
