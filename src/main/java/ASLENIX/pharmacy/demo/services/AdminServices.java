@@ -76,6 +76,8 @@ public interface AdminServices {
 
     void approveBatches(List<Long> batchIds);
 
+    byte[] exportInventoryBatchInExcel( String username) throws IOException;
+
     //==============  Product =======================
 
     void addProduct(Product product);

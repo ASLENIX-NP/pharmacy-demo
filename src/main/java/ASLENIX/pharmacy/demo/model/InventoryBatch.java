@@ -45,8 +45,6 @@ public class InventoryBatch {
     @JoinColumn( nullable = false)
     private PurchaseOrder purchaseOrder;
 
-
-
     private long quantityReceived;
     private long currentStock;
 

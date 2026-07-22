@@ -20,7 +20,7 @@ public class UserExcelExporter {
         try (Workbook workbook = new XSSFWorkbook();
              ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 
-            Sheet sheet = workbook.createSheet("PRODUCTS");
+            Sheet sheet = workbook.createSheet("USERS");
 
             setTitle(sheet, workbook, username);
 

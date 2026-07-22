@@ -43,7 +43,13 @@ public interface InventoryBatchRepository extends JpaRepository<InventoryBatch, 
             "WHERE b.batchApprovalStatus = :status")
     List<InventoryBatch> findByBatchApprovalStatus(@Param("status") BatchApprovalStatus status);
 
-
+    @Query("SELECT DISTINCT b FROM InventoryBatch b " +
+            "JOIN FETCH b.product p " +
+            "LEFT JOIN FETCH p.category " +
+            "JOIN FETCH b.purchaseOrder po " +
+            "LEFT JOIN FETCH po.supplier " +
+            "ORDER BY b.batchNumber ASC")
+    List<InventoryBatch> findAllWithDetails();
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE InventoryBatch ib " +
