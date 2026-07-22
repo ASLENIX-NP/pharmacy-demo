@@ -24,6 +24,9 @@ public interface AdminServices {
 
     boolean isEmailTaken(String email);
 
+    byte[] exportUsersInExcel( String username) throws IOException;
+
+
     //==============  dashboard =======================
 
     Double getTotalSalesThisMonth();

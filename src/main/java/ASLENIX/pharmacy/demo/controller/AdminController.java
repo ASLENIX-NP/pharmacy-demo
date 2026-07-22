@@ -689,6 +689,31 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/admin/user/export")
+    Object userExportInExcel(
+            HttpSession session,RedirectAttributes redirectAttributes) {
+
+        if (session.getAttribute("activeUser") == null) {
+            return "redirect:/login";
+        }
+        try {
+            User user = (User) session.getAttribute("activeUser");
+            byte[] usersInExcelByte = adminServices.exportUsersInExcel(user.getUsername());
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "inline; filename=users_" + user.getUsername()+ "_"+ LocalDateTime.now() + ".xlsx")
+                    .body(usersInExcelByte);
+        }
+        catch (IOException e){
+            redirectAttributes.addFlashAttribute("error", "Error occurred while generating Excel file");
+            return "redirect:/admin/users";
+
+        }
+
+    }
+
     //======= mapping for financials =======
 
     @GetMapping("/admin/financials")

@@ -71,9 +71,14 @@
                 <a th:href="@{/admin/users/add}" class="btn btn-success">
                     <i class="bi bi-person-plus me-2"></i>Add New User
                 </a>
-                <button class="btn btn-outline-secondary">
-                    <i class="bi bi-download me-2"></i>Export Users
-                </button>
+                <form th:action="@{/admin/user/export}" th:method="get" target="_blank" style="display: inline;">
+                    <button type="submit"
+                            class="btn btn-outline-secondary"
+                            id="exportUserExcelBtn"
+                            aria-label="Export User Excel">
+                        <i class="bi bi-download me-2"></i>Export Users
+                    </button>
+                </form>
             </div>
 
             <!-- Users Table -->
