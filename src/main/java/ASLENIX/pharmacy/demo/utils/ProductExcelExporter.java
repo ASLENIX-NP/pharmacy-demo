@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ProductExcelExporter {
 
-    public byte[] generateExcelOfProducts(List<Product> list , String username) throws IOException {
+    public byte[] generate(List<Product> list , String username) throws IOException {
         try (Workbook workbook = new XSSFWorkbook();
              ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 
