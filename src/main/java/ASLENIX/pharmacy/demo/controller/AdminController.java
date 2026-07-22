@@ -207,7 +207,6 @@ public class AdminController {
     }
 
     @PatchMapping("/admin/inventory/approve")
-    @Transactional
     public String approveBatches(@RequestParam(value = "batchIds", required = false) List<Long> batchIds,
                                  RedirectAttributes redirectAttributes){
 
@@ -223,7 +222,30 @@ public class AdminController {
         return "redirect:/admin/inventory";
     }
 
+    @GetMapping("/admin/inventory/export")
+    Object exportInventoryBatch(
+            HttpSession session,RedirectAttributes redirectAttributes) {
 
+        if (session.getAttribute("activeUser") == null) {
+            return "redirect:/login";
+        }
+        try {
+            User user = (User) session.getAttribute("activeUser");
+            byte[] inventoryBatchesInExcelByte = adminServices.exportInventoryBatchInExcel(user.getUsername());
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                            "inline; filename=inventory_batches_" + user.getUsername()+ "_"+ LocalDateTime.now() + ".xlsx")
+                    .body(inventoryBatchesInExcelByte);
+        }
+        catch (IOException e){
+            redirectAttributes.addFlashAttribute("error", "Error occurred while generating Excel file");
+            return "redirect:/admin/inventory";
+
+        }
+
+    }
 
      //======= mapping for product =======
 
@@ -317,7 +339,7 @@ public class AdminController {
     }
 
     @GetMapping("/admin/product/export")
-    Object productExportInExcel(
+    Object exportProducts(
             HttpSession session,RedirectAttributes redirectAttributes) {
 
         if (session.getAttribute("activeUser") == null) {

@@ -9,8 +9,10 @@ import ASLENIX.pharmacy.demo.exception.UserNotFoundException;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
+import ASLENIX.pharmacy.demo.utils.InventoryExcelExporter;
 import ASLENIX.pharmacy.demo.utils.ProductExcelExporter;
 import ASLENIX.pharmacy.demo.utils.UserExcelExporter;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -257,7 +259,7 @@ public class AdminServicesImpl implements AdminServices {
 
     @Override
     public List<InventoryBatch> getAllInventoryBatch() {
-        return inventoryBatchRepository.findAll(Sort.by(Sort.Direction.ASC,"batchNumber"));
+        return inventoryBatchRepository.findAllWithDetails();
     }
 
     @Override
@@ -265,11 +267,19 @@ public class AdminServicesImpl implements AdminServices {
         return inventoryBatchRepository.findByBatchApprovalStatus(status);
     }
 
+    @Transactional
     @Override
     public void approveBatches(List<Long> batchIds) {
 
         inventoryBatchRepository.approveMultipleBatches(batchIds,BatchApprovalStatus.APPROVED,BatchApprovalStatus.PENDING_APPROVAL);
 
+    }
+
+    @Override
+    public byte[] exportInventoryBatchInExcel(String username) throws IOException {
+        List<InventoryBatch> inventoryBatches = getAllInventoryBatch();
+        InventoryExcelExporter exporter = new InventoryExcelExporter();
+        return exporter.generate(inventoryBatches, username);
     }
 
 

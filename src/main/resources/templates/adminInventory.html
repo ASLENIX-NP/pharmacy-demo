@@ -96,10 +96,14 @@
                         <a th:href="@{/admin/inventory/add}" class="btn btn-success">
                             <i class="bi bi-plus-circle me-2"></i>Add Inventory
                         </a>
-                        
-                        <button class="btn btn-outline-secondary">
-                            <i class="bi bi-download me-2"></i>Export Inventory
-                        </button>
+                        <form th:action="@{/admin/inventory/export}" th:method="get" target="_blank" style="display: inline;">
+                            <button type="submit"
+                                    class="btn btn-outline-secondary"
+                                    id="exportInventoryExcelBtn"
+                                    aria-label="Export Inventory Excel">
+                                <i class="bi bi-download me-2"></i>Export Inventory
+                            </button>
+                        </form>
                     </div>
 
                     <div class="card border-0 shadow-sm">
