@@ -92,8 +92,6 @@ public class UserController {
     public String postLogout(HttpSession session){
         session.invalidate();
 
-        return "LoginForm";
+        return "redirect:/login";
     }
-
-
 }

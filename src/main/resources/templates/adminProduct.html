@@ -107,16 +107,16 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover mb-0">
+                                <table id="productTable" class="table table-hover mb-0">
                                     <thead class="table-light">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Product Name</th>
-                                            <th>Category</th>
-                                            <th>Rack Location</th>
-                                            <th>minimum Stock Level</th>
-                                            <th>Action</th>
-                                        </tr>
+                                    <tr>
+                                        <th onclick="sortProductTable(0)" style="cursor:pointer;">ID</th>
+                                        <th onclick="sortProductTable(1)" style="cursor:pointer;">Product Name</th>
+                                        <th onclick="sortProductTable(2)" style="cursor:pointer;">Category</th>
+                                        <th onclick="sortProductTable(3)" style="cursor:pointer;">Rack Location</th>
+                                        <th onclick="sortProductTable(4)" style="cursor:pointer;">Minimum Stock Level</th>
+                                        <th>Action</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
                                         <tr th:each = "p:${products}">
@@ -190,6 +190,39 @@
 
 <!-- Footer -->
 <div th:replace="~{footer :: abis-footer}"></div>
+<script>
+    let productSortDirections = {};
 
+    function sortProductTable(columnIndex) {
+
+        const table = document.getElementById("productTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        productSortDirections[columnIndex] = !productSortDirections[columnIndex];
+
+        rows.sort((a, b) => {
+
+            let x = a.cells[columnIndex].innerText.trim();
+            let y = b.cells[columnIndex].innerText.trim();
+
+            let numX = parseFloat(x);
+            let numY = parseFloat(y);
+
+            if (!isNaN(numX) && !isNaN(numY)) {
+                return productSortDirections[columnIndex]
+                    ? numX - numY
+                    : numY - numX;
+            }
+
+            return productSortDirections[columnIndex]
+                ? x.localeCompare(y)
+                : y.localeCompare(x);
+
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+</script>
 </body>
 </html>

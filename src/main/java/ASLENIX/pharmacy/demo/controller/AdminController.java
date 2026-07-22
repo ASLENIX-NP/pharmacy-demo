@@ -36,15 +36,20 @@ public class AdminController {
 
     @Autowired
     private TokenService tokenService;
+    private boolean isNotAdmin(HttpSession session) {
+        User activeUser = (User) session.getAttribute("activeUser");
+
+        return activeUser == null ||
+                activeUser.getRole() != UserRole.ADMIN;
+    }
 
     //======= mapping for Dashboard =======
 
     @GetMapping("/admin/dashboard")
     public String adminDashboard(Model model, HttpSession session) {
-         if (session.getAttribute("activeUser") == null) {
-             return "redirect:/login";
-         }
-
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
+        }
          Double thisMonthSales= adminServices.getTotalSalesThisMonth();
          List<LowStockNotification> lowStockNotificationList  =adminServices.getLowStockNotification();
          List<ExpiryDateNotification> expiryDateNotificationList = adminServices.getExpiryDateNotification();
@@ -67,7 +72,7 @@ public class AdminController {
     public String disposeExpiredInventoryPost(
             @RequestParam("expiredNotificationId") Long expiredNotificationId,
             HttpSession session, RedirectAttributes redirectAttributes){
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -87,7 +92,7 @@ public class AdminController {
 
     @GetMapping("/admin/inventory")
     public String adminInventory(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -105,7 +110,7 @@ public class AdminController {
 
     @GetMapping("/admin/inventory/add")
     public String addInventoryGet(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -123,7 +128,7 @@ public class AdminController {
             @ModelAttribute InventoryBatch inventoryBatch,
             HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -150,11 +155,9 @@ public class AdminController {
     public String editInventoryGet(
             @RequestParam("id") Long id,
             HttpSession session, Model model) {
-        if (session.getAttribute("activeUser") == null) {
-
-            return "loginForm";
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
         }
-
         InventoryBatch inventoryBatch = adminServices.getInventoryBatchById(id);
         List<Product> products = adminServices.getAllProduct();
         List<PurchaseOrder> purchaseOrders = adminServices.getAllPurchaseOrder();
@@ -175,7 +178,7 @@ public class AdminController {
             @ModelAttribute InventoryBatch newinventoryBatch,
             HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -208,7 +211,11 @@ public class AdminController {
 
     @PatchMapping("/admin/inventory/approve")
     public String approveBatches(@RequestParam(value = "batchIds", required = false) List<Long> batchIds,
-                                 RedirectAttributes redirectAttributes){
+                                 RedirectAttributes redirectAttributes, HttpSession session){
+
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
+        }
 
         if (batchIds == null || batchIds.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Please select at least one batch to approve.");
@@ -251,7 +258,7 @@ public class AdminController {
 
     @GetMapping("/admin/product")
     public String adminProduct(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -264,7 +271,7 @@ public class AdminController {
 
     @GetMapping("/admin/product/add")
     public String addProductGet(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
         model.addAttribute("categories", adminServices.getAllCategory());
@@ -275,9 +282,11 @@ public class AdminController {
     @PostMapping("/admin/product/add")
     public String addProductPost(
             @ModelAttribute Product product,
-            HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+            HttpSession session,
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -298,9 +307,8 @@ public class AdminController {
     public String editProductGet(
             @RequestParam("id") Long id,
             HttpSession session, Model model) {
-        if (session.getAttribute("activeUser") == null) {
-
-            return "loginForm";
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
         }
 
         Product product = adminServices.getProductById(id);
@@ -317,11 +325,9 @@ public class AdminController {
             @ModelAttribute Product product,
             HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
-            return "redirect:/admin/product";
-
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
         }
-
         try {
 
             adminServices.updateProduct(product);
@@ -367,7 +373,7 @@ public class AdminController {
 
     @GetMapping("/admin/category/add")
     public String addCategoryGet(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -380,7 +386,7 @@ public class AdminController {
             @ModelAttribute Category category,
             HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -404,9 +410,8 @@ public class AdminController {
     public String editCategoryGet(
             @RequestParam("id") Long id,
             HttpSession session, Model model) {
-        if (session.getAttribute("activeUser") == null) {
-
-            return "loginForm";
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
         }
 
         Category category = adminServices.getCategoryById(id);
@@ -421,7 +426,7 @@ public class AdminController {
             @ModelAttribute Category category,
             HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -444,7 +449,7 @@ public class AdminController {
     //======= mapping for logistics =======
     @GetMapping("/admin/logistics")
     public String adminLogistics(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -461,7 +466,7 @@ public class AdminController {
 
     @GetMapping("/admin/supplier/add")
     public String addSupplierGet(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -475,10 +480,9 @@ public class AdminController {
             @ModelAttribute Supplier supplier,
             HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
-
         try {
 
             adminServices.addSupplier(supplier);
@@ -498,9 +502,8 @@ public class AdminController {
     public String editSupplierGet(
             @RequestParam("id") Integer id,
             HttpSession session, Model model) {
-        if (session.getAttribute("activeUser") == null) {
-
-            return "loginForm";
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
         }
 
         Supplier supplier = adminServices.getSupplierById(id);
@@ -516,7 +519,7 @@ public class AdminController {
             @ModelAttribute Supplier supplier,
             HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -539,7 +542,7 @@ public class AdminController {
 
     @GetMapping("/admin/purchaseOrder/add")
     public String addPurchaseOrderGet(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -555,7 +558,7 @@ public class AdminController {
     public String addPurchaseOrderPost(
             @ModelAttribute PurchaseOrder purchaseOrder,
             HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -579,9 +582,8 @@ public class AdminController {
     public String editPurchaseOrderGet(
             @RequestParam("id") Long id,
             Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
-
-            return "loginForm";
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
         }
 
         List<Supplier> suppliers = adminServices.getAllSupplier();
@@ -599,7 +601,7 @@ public class AdminController {
             @ModelAttribute PurchaseOrder purchaseOrder,
             Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 
@@ -622,7 +624,7 @@ public class AdminController {
     //======= mapping for users =======
     @GetMapping("/admin/users")
     public String adminUsers(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
         List<User> users = adminServices.getAllUsers();
@@ -633,7 +635,7 @@ public class AdminController {
 
     @GetMapping("/admin/users/add")
     public String addUserPage(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
         model.addAttribute("role", UserRole.values());
@@ -678,9 +680,8 @@ public class AdminController {
     public String editUserGet(
             @RequestParam("id") Long id,
             Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
-
-            return "loginForm";
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
         }
         model.addAttribute("role", UserRole.values());
         model.addAttribute("status", UserStatus.values());
@@ -694,9 +695,8 @@ public class AdminController {
             @ModelAttribute User user,
             HttpSession session,RedirectAttributes redirectAttributes) {
 
-        if (session.getAttribute("activeUser") == null) {
-
-            return "loginForm";
+        if (isNotAdmin(session)) {
+            return "redirect:/login";
         }
 
         try {
@@ -740,7 +740,7 @@ public class AdminController {
 
     @GetMapping("/admin/financials")
     public String adminFinancials(Model model, HttpSession session) {
-        if (session.getAttribute("activeUser") == null) {
+        if (isNotAdmin(session)) {
             return "redirect:/login";
         }
 

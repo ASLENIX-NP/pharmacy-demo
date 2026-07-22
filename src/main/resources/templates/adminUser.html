@@ -85,16 +85,16 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table id="userTable" class="table table-hover mb-0">
                             <thead class="table-light">
-                                <tr>
-                                    <th>User ID</th>
-                                    <th>User Name</th>
-                                    <th>Role</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
+                            <tr>
+                                <th onclick="sortUserTable(0)" style="cursor:pointer;">User ID</th>
+                                <th onclick="sortUserTable(1)" style="cursor:pointer;">User Name</th>
+                                <th onclick="sortUserTable(2)" style="cursor:pointer;">Role</th>
+                                <th onclick="sortUserTable(3)" style="cursor:pointer;">Email</th>
+                                <th onclick="sortUserTable(4)" style="cursor:pointer;">Status</th>
+                                <th>Action</th>
+                            </tr>
                             </thead>
                             <tbody>
                                 <tr th:each = "u:${users}">
@@ -122,7 +122,42 @@
 
 <!-- Footer -->
 <div th:replace="~{footer :: abis-footer}"></div>
+<script>
 
+    let userSort = {};
+
+    function sortUserTable(columnIndex) {
+
+        const table = document.getElementById("userTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        userSort[columnIndex] = !userSort[columnIndex];
+
+        rows.sort((a, b) => {
+
+            let x = a.cells[columnIndex].innerText.trim();
+            let y = b.cells[columnIndex].innerText.trim();
+
+            let numX = parseFloat(x);
+            let numY = parseFloat(y);
+
+            if (!isNaN(numX) && !isNaN(numY)) {
+                return userSort[columnIndex]
+                    ? numX - numY
+                    : numY - numX;
+            }
+
+            return userSort[columnIndex]
+                ? x.localeCompare(y)
+                : y.localeCompare(x);
+
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+</script>
 
 </body>
 </html>

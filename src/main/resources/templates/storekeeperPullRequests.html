@@ -54,13 +54,13 @@
             <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
                 <p th:text="${errorMessage}"></p>
             </div>
-            <table class="table">
+            <table id="pullRequestTable" class="table">
                 <thead>
                 <tr>
-                    <th>Batch ID</th>
-                    <th>Product Name</th>
-                    <th>Status</th>
-                    <th>Rack Location</th>
+                    <th onclick="sortPullRequestTable(0)" style="cursor:pointer;">Batch ID</th>
+                    <th onclick="sortPullRequestTable(1)" style="cursor:pointer;">Product Name</th>
+                    <th onclick="sortPullRequestTable(2)" style="cursor:pointer;">Status</th>
+                    <th onclick="sortPullRequestTable(3)" style="cursor:pointer;">Rack Location</th>
                     <th>Action</th>
                 </tr>
                 </thead>
@@ -85,5 +85,50 @@
 
 <!-- Footer -->
 <div th:replace="~{footer :: abis-footer}"></div>
+<script>
+
+    let pullRequestSort = {};
+
+    function sortPullRequestTable(columnIndex) {
+
+        const table = document.getElementById("pullRequestTable");
+        const tbody = table.tBodies[0];
+        const rows = Array.from(tbody.rows);
+
+        pullRequestSort[columnIndex] = !pullRequestSort[columnIndex];
+
+        rows.sort((a, b) => {
+
+            let x = a.cells[columnIndex].innerText.trim();
+            let y = b.cells[columnIndex].innerText.trim();
+
+            let numX = parseFloat(x);
+            let numY = parseFloat(y);
+
+            if (!isNaN(numX) && !isNaN(numY)) {
+                return pullRequestSort[columnIndex]
+                    ? numX - numY
+                    : numY - numX;
+            }
+
+            let dateX = Date.parse(x);
+            let dateY = Date.parse(y);
+
+            if (!isNaN(dateX) && !isNaN(dateY)) {
+                return pullRequestSort[columnIndex]
+                    ? dateX - dateY
+                    : dateY - dateX;
+            }
+
+            return pullRequestSort[columnIndex]
+                ? x.localeCompare(y)
+                : y.localeCompare(x);
+
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+</script>
 </body>
 </html>
