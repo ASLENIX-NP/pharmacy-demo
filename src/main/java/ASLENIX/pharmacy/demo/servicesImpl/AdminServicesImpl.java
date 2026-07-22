@@ -10,6 +10,7 @@ import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
 import ASLENIX.pharmacy.demo.utils.ProductExcelExporter;
+import ASLENIX.pharmacy.demo.utils.UserExcelExporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -123,6 +124,13 @@ public class AdminServicesImpl implements AdminServices {
     @Override
     public boolean isEmailTaken(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public byte[] exportUsersInExcel(String username) throws IOException {
+        List<User> userList = userRepository.findAll();
+        UserExcelExporter exporter = new UserExcelExporter();
+        return exporter.generate(userList, username);
     }
 
 //  ===================  dashboard  =================
@@ -291,7 +299,7 @@ public class AdminServicesImpl implements AdminServices {
 
             List<Product> productList = productRepository.findAllWithCategory();
             ProductExcelExporter exporter = new ProductExcelExporter();
-            return exporter.generateExcelOfProducts(productList, username);
+            return exporter.generate(productList, username);
 
     }
 
