@@ -15,50 +15,63 @@ Pharmacy Demo is a Spring Boot web application for managing pharmacy operations 
 
 1. Clone the repository.
 2. Create a MySQL database for the application.
-3. Set the required environment variables used in `src/main/resources/application.properties`:
+3. Configure environment variables for your database and mail credentials by updating one of the scripts below.
+
+#### Windows
+
+Update a local script named `run-local-windows.ps1` in the project root and configure your variables:
 
 ```powershell
+# Configure these variables with your database and mail credentials
 $env:DB_PORT="3306"
-$env:DB_NAME="DB_NAME"
-$env:DB_USERNAME="DB_USERNAME"
-$env:DB_PASSWORD="DB_PASSWORD"
-$env:DOMAIN="DOMAIN"
-$env:MAIL_PASSWORD="MAIL_PASSWORD"
-$env:MAIL_USERNAME="MAIL_USERNAME"
-```
-
-4. Start the application from the project root:
-
-```powershell
+$env:DB_NAME="your_database_name"
+$env:DB_USERNAME="your_db_username"
+$env:DB_PASSWORD="your_db_password"
+$env:DOMAIN="your_domain"
+$env:MAIL_PASSWORD="your_mail_password"
+$env:MAIL_USERNAME="your_mail_username"
 
 .\mvnw.cmd spring-boot:run
 ```
 
-### Run with one command (recommended for local development)
-
-If you want one command every time, create a local script named `run_local.ps1` in the project root:
+Then run from the project root:
 
 ```powershell
-$env:DB_PORT="3306"
-$env:DB_NAME="DB_NAME"
-$env:DB_USERNAME="DB_USERNAME"
-$env:DB_PASSWORD="DB_PASSWORD"
-$env:DOMAIN="DOMAIN"
-$env:MAIL_PASSWORD="MAIL_PASSWORD"
-$env:MAIL_USERNAME="MAIL_USERNAME"
-
-.\mvnw.cmd spring-boot:run
+.\run-local-windows.ps1
 ```
 
-Then run:
+#### macOS & Linux
 
-```powershell
-.\run_local.ps1
+Update a local script named `run-local-maclinux.sh` in the project root and configure your variables:
+
+```bash
+# Configure these variables with your database and mail credentials
+export DB_PORT="3306"
+export DB_NAME="your_database_name"
+export DB_USERNAME="your_db_username"
+export DB_PASSWORD="your_db_password"
+export DOMAIN="your_domain"
+export MAIL_PASSWORD="your_mail_password"
+export MAIL_USERNAME="your_mail_username"
+
+./mvnw spring-boot:run
 ```
 
-This helps avoid the common issue where `spring-boot:run` fails in a terminal because environment variables are not set in that shell session.
+Make it executable:
 
-5. Open the app in your browser at:
+```bash
+chmod +x run-local-maclinux.sh
+```
+
+Then run from the project root:
+
+```bash
+./run-local-maclinux.sh
+```
+
+---
+
+4. Open the app in your browser at:
 
 ```text
 http://localhost:8080
