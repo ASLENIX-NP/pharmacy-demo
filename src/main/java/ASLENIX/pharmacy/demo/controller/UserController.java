@@ -94,4 +94,24 @@ public class UserController {
 
         return "redirect:/login";
     }
+    @GetMapping("/user/accountsettings")
+    public String accountSettings(Model model, HttpSession session) {
+
+        User activeUser = (User) session.getAttribute("activeUser");
+
+        if (activeUser == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("user", activeUser);
+
+        return "accountSettings";
+    }
+
+    @PostMapping("/user/accountsettings")
+    public String updateAccountSettings(HttpSession session) {
+
+        // We'll implement the update logic later
+        return "redirect:/user/accountsettings";
+    }
 }
