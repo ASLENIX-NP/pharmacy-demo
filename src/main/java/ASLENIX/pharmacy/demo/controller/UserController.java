@@ -1,17 +1,18 @@
 package ASLENIX.pharmacy.demo.controller;
 
 
+import ASLENIX.pharmacy.demo.exception.UserNotFoundException;
 import ASLENIX.pharmacy.demo.model.User;
 import ASLENIX.pharmacy.demo.Enums.UserStatus;
-import ASLENIX.pharmacy.demo.services.AdminServices;
 import ASLENIX.pharmacy.demo.services.UserService;
+import ASLENIX.pharmacy.demo.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
+import org.apache.xmlbeans.impl.xb.xsdschema.ReducedDerivationControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private AdminServices adminServices;
+    private UserRepository userRepository;
 
 
     @GetMapping({"/"  ,"/login"})
@@ -53,11 +54,11 @@ public class UserController {
             return "loginForm";
         }
 
-        return "redirect:/Dashboard";
+        return "redirect:/dashboard";
 
     }
 
-    @GetMapping("/Dashboard")
+    @GetMapping("/dashboard")
     public String roleBasedDashboardRedirect(HttpSession session,Model model){
         User activeUser = (User) session.getAttribute("activeUser");
         if (activeUser == null) {
@@ -94,6 +95,7 @@ public class UserController {
 
         return "redirect:/login";
     }
+
     @GetMapping("/user/accountsettings")
     public String accountSettings(Model model, HttpSession session) {
 
@@ -108,10 +110,29 @@ public class UserController {
         return "accountSettings";
     }
 
-    @PostMapping("/user/accountsettings")
-    public String updateAccountSettings(HttpSession session) {
+    @PostMapping("/user/edit")
+    public String updateAccountSettings(
+            @RequestParam(name = "firstName") String firstName,
+            @RequestParam(name = "lastName") String lastName,
+            HttpSession session, RedirectAttributes redirectAttributes) {
 
-        // We'll implement the update logic later
-        return "redirect:/user/accountsettings";
+        User activeUser = (User) session.getAttribute("activeUser");
+
+        if (activeUser == null) {
+            return "redirect:/login";
+        }
+
+        try{
+            User savedUser =  userService.editUser(activeUser.getId(),firstName, lastName);
+            session.setAttribute("activeUser", savedUser);
+            redirectAttributes.addFlashAttribute("success", "Account settings updated successfully.");
+            return "redirect:/user/accountsettings";
+        }
+        catch (UserNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/user/accountsettings";
+
+        }
     }
+
 }
