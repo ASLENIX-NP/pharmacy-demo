@@ -84,7 +84,7 @@ After the application starts, use the browser to access the login page and role-
 ### Common pages
 
 - Login: `http://localhost:8080/login`
-- Dashboard redirect: `http://localhost:8080/Dashboard`
+- Dashboard redirect: `http://localhost:8080/dashboard`
 - Forgot password: `http://localhost:8080/forgot-password`
 
 ### Example browser flow
