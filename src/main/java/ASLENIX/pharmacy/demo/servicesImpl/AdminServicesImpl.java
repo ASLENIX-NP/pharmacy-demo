@@ -58,6 +58,9 @@ public class AdminServicesImpl implements AdminServices {
     @Autowired
     private FinanceStatsImpl financeStatsImpl ;
 
+    @Autowired
+    private UserServiceImpl  userService;
+
 
 //  ===================  users  =================
 
@@ -66,30 +69,6 @@ public class AdminServicesImpl implements AdminServices {
     public void addUser(User user) {
         userRepository.save(user);
 
-    }
-
-    private String generateUserName(String firstName, Long userId) {
-        if (firstName == null) {
-            firstName = "";
-        }
-
-        String combined = firstName + (userId != null ? userId : "");
-
-        return combined.replaceAll("[^a-zA-Z0-9]", "_").toLowerCase();
-    }
-
-    private String generateInitials(String firstName, String lastName) {
-        StringBuilder initials = new StringBuilder();
-
-        if (firstName != null && !firstName.trim().isEmpty()) {
-            initials.append(firstName.trim().charAt(0));
-        }
-
-        if (lastName != null && !lastName.trim().isEmpty()) {
-            initials.append(lastName.trim().charAt(0));
-        }
-
-        return initials.toString().toUpperCase();
     }
 
     @Override
@@ -103,8 +82,8 @@ public class AdminServicesImpl implements AdminServices {
         User oldUser = oldUserOpt.get();
 
 
-        user.setUsername(generateUserName(user.getFirstName(), user.getId()));
-        user.setInitials(generateInitials(user.getFirstName(),user.getLastName()));
+        user.setUsername(userService.generateUserName(user.getFirstName(), user.getId()));
+        user.setInitials(userService.generateInitials(user.getFirstName(), user.getLastName()));
         user.setPassword(oldUser.getPassword());
         user.setCreatedAt(oldUser.getCreatedAt());
 
