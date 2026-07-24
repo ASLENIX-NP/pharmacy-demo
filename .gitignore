@@ -35,3 +35,5 @@ build/
 # Local developer startup script (contains machine-specific secrets)
 run-local-gitignore.ps1
 
+# ProductRestController - sensitive or temporary API controller
+src/main/java/ASLENIX/pharmacy/demo/api/ProductRestController.java
