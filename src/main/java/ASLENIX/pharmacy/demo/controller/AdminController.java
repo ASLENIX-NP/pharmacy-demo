@@ -119,7 +119,6 @@ public class AdminController {
 
         model.addAttribute("products", products);
         model.addAttribute("purchaseOrder", purchaseOrders);
-        model.addAttribute("currentPage", "logistics");
         return "addInventoryForm";
     }
 
@@ -146,7 +145,7 @@ public class AdminController {
             return "redirect:/admin/inventory";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
+
             return "redirect:/admin/inventory";
         }
     }
@@ -204,7 +203,6 @@ public class AdminController {
             return "redirect:/admin/inventory";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
             return "redirect:/admin/inventory";
         }
     }
@@ -275,7 +273,6 @@ public class AdminController {
             return "redirect:/login";
         }
         model.addAttribute("categories", adminServices.getAllCategory());
-        model.addAttribute("currentPage", "logistics");
         return "addProductForm";
     }
 
@@ -298,7 +295,6 @@ public class AdminController {
             return "redirect:/admin/inventory";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
             return "redirect:/admin/product";
         }
     }
@@ -338,7 +334,7 @@ public class AdminController {
             return "redirect:/admin/inventory";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
+
             return "redirect:/admin/product";
 
         }
@@ -377,7 +373,6 @@ public class AdminController {
             return "redirect:/login";
         }
 
-        model.addAttribute("currentPage", "logistics");
         return "addCategoryForm";
     }
 
@@ -401,7 +396,7 @@ public class AdminController {
             return "redirect:/admin/inventory";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
+
             return "redirect:/admin/inventory";
         }
     }
@@ -440,7 +435,6 @@ public class AdminController {
             return "redirect:/admin/inventory";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
             return "redirect:/admin/inventory";
         }
     }
@@ -471,7 +465,7 @@ public class AdminController {
         }
 
         model.addAttribute("supplierStatus", SupplierStatus.values());
-        model.addAttribute("currentPage", "logistics");
+
         return "addSupplierForm.html";
     }
 
@@ -493,7 +487,7 @@ public class AdminController {
             return "redirect:/admin/logistics";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
+
             return "redirect:/admin/logistics";
         }
     }
@@ -533,7 +527,7 @@ public class AdminController {
             return "redirect:/admin/logistics";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
+
             return "redirect:/admin/logistics";
         }
     }
@@ -550,7 +544,7 @@ public class AdminController {
 
         model.addAttribute("suppliers", suppliers);
         model.addAttribute("payment_status", PaymentStatus.values());
-        model.addAttribute("currentPage", "logistics");
+
         return "addPurchaseStatusForm.html";
     }
 
@@ -572,7 +566,7 @@ public class AdminController {
             return "redirect:/admin/logistics";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create purchase order: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
+
             return "redirect:/admin/users";
         }
 
@@ -613,7 +607,7 @@ public class AdminController {
 
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
+
             return "redirect:/admin/logistics";
         }
 
@@ -640,7 +634,6 @@ public class AdminController {
         }
         model.addAttribute("role", UserRole.values());
         model.addAttribute("status", UserStatus.values());
-        model.addAttribute("currentPage", "users");
         return "addUserForm";
     }
 
@@ -671,7 +664,6 @@ public class AdminController {
             return "redirect:/admin/users";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            model.addAttribute("currentPage", "users");
             return "redirect:/admin/users";
         }
     }
