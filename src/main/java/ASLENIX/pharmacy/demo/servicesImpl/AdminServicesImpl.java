@@ -2,13 +2,13 @@ package ASLENIX.pharmacy.demo.servicesImpl;
 
 import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.Enums.PaymentStatus;
-import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
-import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
-import ASLENIX.pharmacy.demo.exception.ReportNotUpdatedExcpetion;
-import ASLENIX.pharmacy.demo.exception.UserNotFoundException;
+import ASLENIX.pharmacy.demo.Enums.UserStatus;
+import ASLENIX.pharmacy.demo.exception.*;
 import ASLENIX.pharmacy.demo.model.*;
 import ASLENIX.pharmacy.demo.repository.*;
 import ASLENIX.pharmacy.demo.services.AdminServices;
+import ASLENIX.pharmacy.demo.services.EmailService;
+import ASLENIX.pharmacy.demo.services.TokenService;
 import ASLENIX.pharmacy.demo.utils.InventoryExcelExporter;
 import ASLENIX.pharmacy.demo.utils.ProductExcelExporter;
 import ASLENIX.pharmacy.demo.utils.UserExcelExporter;
@@ -61,13 +61,33 @@ public class AdminServicesImpl implements AdminServices {
     @Autowired
     private UserServiceImpl  userService;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private TokenService tokenService;
+
 
 //  ===================  users  =================
 
 
     @Override
     public void addUser(User user) {
+
+        if (isEmailTaken(user.getEmail())) {
+            throw new EmailAlreadyExistsException("Email is already registered.");
+        }
+
+        user.setCreatedAt(java.time.LocalDate.now());
+        user.setPassword(java.util.UUID.randomUUID().toString());
+        user.setStatus(UserStatus.PENDING);
+
+        user.initializeProfileMetadata();
+
         userRepository.save(user);
+
+        PasswordResetToken token = tokenService.createToken(user);
+        emailService.sendPasswordSetupEmail(user.getEmail(), user.getUsername(), token.getToken());
 
     }
 
@@ -81,12 +101,12 @@ public class AdminServicesImpl implements AdminServices {
 
         User oldUser = oldUserOpt.get();
 
-
         user.setUsername(userService.generateUserName(user.getFirstName(), user.getId()));
         user.setInitials(userService.generateInitials(user.getFirstName(), user.getLastName()));
         user.setPassword(oldUser.getPassword());
         user.setCreatedAt(oldUser.getCreatedAt());
 
+        user.initializeProfileMetadata();
 
         userRepository.save(user);
     }

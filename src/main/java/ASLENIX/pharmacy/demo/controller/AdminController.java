@@ -1,6 +1,7 @@
 package ASLENIX.pharmacy.demo.controller;
 
 import ASLENIX.pharmacy.demo.Enums.*;
+import ASLENIX.pharmacy.demo.exception.EmailAlreadyExistsException;
 import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
 import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
 import ASLENIX.pharmacy.demo.exception.UserNotFoundException;
@@ -31,11 +32,6 @@ public class AdminController {
     @Autowired
     private AdminServicesImpl adminServices;
 
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private TokenService tokenService;
     private boolean isNotAdmin(HttpSession session) {
         User activeUser = (User) session.getAttribute("activeUser");
 
@@ -646,23 +642,18 @@ public class AdminController {
         }
 
         try {
-            if (adminServices.isEmailTaken(user.getEmail())) {
-                redirectAttributes.addFlashAttribute("error", "Email is already registered.");
-                return "redirect:/admin/users/add";
-            }
-
-            user.setCreatedAt(java.time.LocalDate.now());
-            user.setPassword(java.util.UUID.randomUUID().toString());
-            user.setStatus(UserStatus.PENDING);
-            adminServices.addUser(user);
-
-            PasswordResetToken token = tokenService.createToken(user);
-            emailService.sendPasswordSetupEmail(user.getEmail(), user.getUsername(), token.getToken());
+           adminServices.addUser(user);
 
             redirectAttributes.addFlashAttribute("success",
                     "User '" + user.getFirstName() + " " + user.getLastName() + "' created successfully! An invitation email has been sent.");
             return "redirect:/admin/users";
-        } catch (Exception e) {
+        }
+        catch (EmailAlreadyExistsException e){
+            model.addAttribute("error", e.getMessage());
+            return "redirect:/admin/users/add";
+
+        }
+        catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
             return "redirect:/admin/users";
         }
