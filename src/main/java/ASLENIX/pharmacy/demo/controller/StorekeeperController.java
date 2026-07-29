@@ -62,7 +62,6 @@ public class StorekeeperController {
 
         model.addAttribute("products", products);
         model.addAttribute("purchaseOrder",purchaseOrders);
-        model.addAttribute("currentPage", "logistics");
 
 
         return "addStorekeeperStockLedgerForm";
