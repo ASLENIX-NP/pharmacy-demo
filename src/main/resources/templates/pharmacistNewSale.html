@@ -356,7 +356,7 @@
                             <form id="medSearchForm" th:action="@{/pharmacist/newSales/product/find}" method="get" class="mb-0">
                                 <div class="input-group input-group-lg mb-3 shadow-sm rounded-3">
                                     <input th:if="${invoice != null}" type="hidden" name="invoiceId" th:value="${invoice.id}" />
-                                    <label for="query">Search Medicine</label>
+                                    <label for="query"></label>
                                     <input type="text" id="query" name="query" class="form-control fs-6 border-end-0"
                                                                       placeholder="Search medicine by name" autocomplete="off">
                                     <button class="btn btn-success border-start-0 px-4" type="submit" id="searchBtn">
