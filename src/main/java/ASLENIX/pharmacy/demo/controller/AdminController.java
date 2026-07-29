@@ -292,7 +292,7 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("success",
                     "product " + product.getName() + "' created successfully!");
 
-            return "redirect:/admin/inventory";
+            return "redirect:/admin/product";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
             return "redirect:/admin/product";
@@ -393,11 +393,11 @@ public class AdminController {
                     "category " + category.getCategoryName() + "' created successfully!");
 
 
-            return "redirect:/admin/inventory";
+            return "redirect:/admin/product";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
 
-            return "redirect:/admin/inventory";
+            return "redirect:/admin/product";
         }
     }
 
@@ -432,10 +432,10 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("success",
                     "category   '" + category.getCategoryName() + "' updated successfully!");
 
-            return "redirect:/admin/inventory";
+            return "redirect:/admin/product";
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create user: " + e.getMessage());
-            return "redirect:/admin/inventory";
+            return "redirect:/admin/product";
         }
     }
 
@@ -567,7 +567,7 @@ public class AdminController {
         } catch (Exception e) {
             model.addAttribute("error", "Failed to create purchase order: " + e.getMessage());
 
-            return "redirect:/admin/users";
+            return "redirect:/admin/logistics";
         }
 
     }
@@ -606,7 +606,7 @@ public class AdminController {
                     "Purchase Order '" + purchaseOrder.getPurchaseNumber() + "' updated successfully!");
 
         } catch (Exception e) {
-            model.addAttribute("error", "Failed to create user: " + e.getMessage());
+            model.addAttribute("error", "Failed to update purchase order: " + e.getMessage());
 
             return "redirect:/admin/logistics";
         }
