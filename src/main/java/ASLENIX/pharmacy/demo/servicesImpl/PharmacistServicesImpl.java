@@ -141,6 +141,10 @@ public class PharmacistServicesImpl implements PharmacistServices {
     @Override
     public Invoice addingItemInInvoiceList(Long invoiceId, Long batchId, Long quantity) {
 
+        if(invoiceId == null) {
+            throw new InvoiceNotFoundException("Please generate an invoice first.");
+        }
+
         Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new InvoiceNotFoundException("Invoice not found"));
 
         InventoryBatch inventoryBatch = inventoryBatchRepository.findById(batchId).orElseThrow(()

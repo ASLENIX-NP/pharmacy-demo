@@ -243,7 +243,7 @@ public class PharmacistController {
             return "redirect:/pharmacist/newSales?invoiceId=" + updatedInvoice.getId();
 
         } catch (InvoiceNotFoundException e) {
-            redirectAttributes.addFlashAttribute("invoiceError", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/pharmacist/newSales";
         }catch (BatchNotFoundException | InsufficientStockException e) {
             redirectAttributes.addFlashAttribute("invoiceError", e.getMessage());
