@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script th:src="@{/js/sidebar-persistent.js}" defer></script></head>
+        <script th:src="@{/js/sidebar-persistent.js}" defer></script>
 
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -26,7 +26,7 @@
         </button>
        
        
-        <div id="invoiceSearchError" class="text-danger small mt-1" th:classappend="${error == null} ? 'd-none'">
+        <div id="error" class="text-danger small mt-1" th:classappend="${error == null} ? 'd-none'">
             [[${error}]]
         </div>
         <div class="container-fluid p-0">
@@ -67,6 +67,7 @@
                                     
                                     <form th:action="@{/pharmacist/newSales/invoice/search}" method="GET">
                                         <div class="input-group">
+                                            <label for="searchInvoiceInput" class="form-label">Invoice ID</label>
                                             <input type="number" class="form-control" id="searchInvoiceInput" name="searchInvoiceInput" placeholder="Invoice ID (e.g. 1)" step="1" required>
                                             
                                             <button class="btn btn-outline-secondary px-3" type="submit" id="searchInvoiceBtn">
@@ -155,13 +156,11 @@
                                             <form th:action="@{/pharmacist/newSales/customer/search}"  method="GET">
                                                 <div class="input-group input-group-sm">
                                                     
-                                                    <input type="hidden" id="invoiceId" name="invoiceId"  th:value="${invoice != null ? invoice.id : ''}">
-                                                    
-                                                    <input type="text" 
-                                                        id="customerId" 
-                                                        name="customerId" 
-                                                        class="form-control" 
-                                                        placeholder="Search ID...">
+                                                    <input type="hidden" name="invoiceId"  th:value="${invoice != null ? invoice.id : ''}">
+
+                                                    <label for="customerId">Customer ID</label>
+                                                    <input type="text" id="customerId" name="customerId"
+                                                           class="form-control" placeholder="Search ID...">
                                                         
                                                     <button class="btn btn-primary" type="submit">
                                                         <i class="bi bi-search"></i>
@@ -192,8 +191,8 @@
                                                 <i class="bi bi-pencil-square"></i> Edit Profile 
                                             </button>
                                             <form th:action="@{/pharmacist/newSales/customer/disconnect}" th:method="patch" class="d-flex">
-                                                <input type="hidden" id="invoiceId" name="invoiceId" th:value="${invoice?.id}" />
-                                                
+                                                <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
+
                                                 <button type="submit" class="btn btn-sm btn-outline-danger">
                                                     <i class="bi bi-x-circle"></i> Disconnect
                                                 </button>
@@ -324,7 +323,8 @@
                                     </div>
                                                                         
                                     <div class="col-12 col-md-4">
-                                        <form action="/pharmacist/newSales/invoice/checkout" method="POST" id="checkoutForm">
+                                        <form th:action="@{/pharmacist/newSales/invoice/checkout}" th:method="post"
+                                              id="checkoutForm">
                                             <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
 
                                             <button type="submit" class="btn btn-success w-100 py-3 shadow-sm fw-bold d-flex align-items-center justify-content-center gap-2" id="checkoutBtn">
@@ -356,8 +356,9 @@
                             <form id="medSearchForm" th:action="@{/pharmacist/newSales/product/find}" method="get" class="mb-0">
                                 <div class="input-group input-group-lg mb-3 shadow-sm rounded-3">
                                     <input th:if="${invoice != null}" type="hidden" name="invoiceId" th:value="${invoice.id}" />
-                                    <input type="text" id="query" name="query" class="form-control fs-6 border-end-0" 
-                                           placeholder="Search medicine by name" autocomplete="off">
+                                    <label for="query">Search Medicine</label>
+                                    <input type="text" id="query" name="query" class="form-control fs-6 border-end-0"
+                                                                      placeholder="Search medicine by name" autocomplete="off">
                                     <button class="btn btn-success border-start-0 px-4" type="submit" id="searchBtn">
                                         <i class="bi bi-search"></i>
                                     </button>
@@ -405,16 +406,18 @@
                                                         <input type="hidden" name="invoiceId" th:value="${invoice?.id}" />
 
 
-                                                           <input type="number"
-                                                                name="quantity"
-                                                                th:value="1"
-                                                                min="1"
-                                                                step="1"
-                                                                th:attr="max=${ib.currentStock}"
-                                                                class="form-control form-control-sm d-inline-block"
-                                                                style="width: 80px;" required/> 
+                                                        <label>
+                                                            <input type="number"
+                                                                 name="quantity"
+                                                                 th:value="1"
+                                                                 min="1"
+                                                                 step="1"
+                                                                 th:attr="max=${ib.currentStock}"
+                                                                 class="form-control form-control-sm d-inline-block"
+                                                                 style="width: 80px;" required/>
+                                                        </label>
 
-                                                        
+
                                                         <button type="submit" class="btn btn-sm btn-success">
                                                             Add
                                                         </button>
@@ -500,29 +503,29 @@
                 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="customerName" class="form-label">Name *</label>
-                        <input type="text" class="form-control" id="customerName" name="name" required placeholder="John Doe">
+                        <label for="addCustomerName" class="form-label">Name *</label>
+                        <input type="text" class="form-control" id="addCustomerName" name="name" required placeholder="John Doe">
                     </div>
                     
                     <div class="mb-3">
-                        <label for="customerPhone" class="form-label">Phone Number *</label>
-                        <input type="tel" class="form-control" id="customerPhone" name="phone" required placeholder="123-456-7890">
+                        <label for="addCustomerPhone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" id="addCustomerPhone" name="phone" required placeholder="123-456-7890">
                     </div>
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email </label>
-                        <input type="email" class="form-control" id="email" name="email"  placeholder="johndow@web.com">
+                        <label for="addCustomerEmail" class="form-label">Email </label>
+                        <input type="email" class="form-control" id="addCustomerEmail" name="email"  placeholder="johndow@web.com">
                     </div>
 
                      <div class="mb-3">
-                        <label for="panNumber" class="form-label">PAN Number </label>
-                        <input type="text" class="form-control" id="panNumber" name="panNumber"  placeholder="123123113">
+                        <label for="addCustomerPanNumber" class="form-label">PAN Number </label>
+                        <input type="text" class="form-control" id="addCustomerPanNumber" name="panNumber"  placeholder="123123113">
                     </div>
                     <div class="mb-3">
-                        <label for="medicalHistoryNotes" class="form-label">Medical History Notes</label>
-                        <textarea class="form-control" 
-                                id="medicalHistoryNotes" 
-                                name="medicalHistoryNotes" 
+                        <label for="addCustomerMedicalHistoryNotes" class="form-label">Medical History Notes</label>
+                        <textarea class="form-control"
+                                id="addCustomerMedicalHistoryNotes"
+                                name="medicalHistoryNotes"
                                 rows="4" 
                                 placeholder="Enter detailed medical history, previous surgeries, or allergies..."></textarea>
                     </div>
@@ -558,34 +561,34 @@
             
             <form th:action="@{/pharmacist/newSales/customer/edit(invoiceId=${invoice?.id})}"  method="POST">
                 
-                <input type="hidden" id="id" name="id" th:value="${invoice?.customer?.id}" />
-                
+                <input type="hidden" id="editCustomerId" name="id" th:value="${invoice?.customer?.id}" />
+
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name *</label>
-                        <input type="text" class="form-control" id="name" name="name" th:value="${invoice?.customer?.name}" required placeholder="John Doe">
+                        <label for="editCustomerName" class="form-label">Name *</label>
+                        <input type="text" class="form-control" id="editCustomerName" name="name" th:value="${invoice?.customer?.name}" required placeholder="John Doe">
                     </div>
                     
                     <div class="mb-3">
-                        <label for="phone" class="form-label">Phone Number *</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" th:value="${invoice?.customer?.phone}" required placeholder="123-456-7890">
+                        <label for="editCustomerPhone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" id="editCustomerPhone" name="phone" th:value="${invoice?.customer?.phone}" required placeholder="123-456-7890">
                     </div>
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email </label>
-                        <input type="email" class="form-control" id="email" name="email" th:value="${invoice?.customer?.email}" placeholder="johndow@web.com">
+                        <label for="editCustomerEmail" class="form-label">Email </label>
+                        <input type="email" class="form-control" id="editCustomerEmail" name="email" th:value="${invoice?.customer?.email}" placeholder="johndow@web.com">
                     </div>
 
                     <div class="mb-3">
-                        <label for="panNumber" class="form-label">PAN Number </label>
-                        <input type="text" class="form-control" id="panNumber" name="panNumber" th:value="${invoice?.customer?.panNumber}" placeholder="123123113">
+                        <label for="editCustomerPanNumber" class="form-label">PAN Number </label>
+                        <input type="text" class="form-control" id="editCustomerPanNumber" name="panNumber" th:value="${invoice?.customer?.panNumber}" placeholder="123123113">
                     </div>
                     
                     <div class="mb-3">
-                        <label for="medicalHistoryNotes" class="form-label">Medical History Notes</label>
-                        <textarea class="form-control" 
-                                  id="medicalHistoryNotes" 
-                                  name="medicalHistoryNotes" 
+                        <label for="editCustomerMedicalHistoryNotes" class="form-label">Medical History Notes</label>
+                        <textarea class="form-control"
+                                  id="editCustomerMedicalHistoryNotes"
+                                  name="medicalHistoryNotes"
                                   rows="4" 
                                   th:text="${invoice?.customer?.medicalHistoryNotes}"
                                   placeholder="Enter detailed medical history, previous surgeries, or allergies..."></textarea>

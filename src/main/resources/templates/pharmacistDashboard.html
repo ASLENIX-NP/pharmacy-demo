@@ -8,8 +8,7 @@
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-      <script th:src="@{/js/sidebar-persistent.js}" defer></script></head>
-
+      <script th:src="@{/js/sidebar-persistent.js}" defer></script>
 </head>
 <body  class="d-flex flex-column min-vh-100">
 <div th:replace="~{header :: abis-navbar}"></div>
@@ -62,7 +61,7 @@
 
         <div class="col-lg-12 col-12 d-flex flex-column gap-3">
 
-            <!-- INVOICE searcj CARD -->
+            <!-- INVOICE SEARCH CARD -->
             <div class="card rounded-3 shadow-sm border-0" id="invoiceSetupCard" th:classappend="${activeInvoice ==null } ? 'd-flex' : 'd-none '">
                 <div class="card-body">
                     <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-receipt me-2 text-primary"></i>Invoice Search</h5>
@@ -73,6 +72,7 @@
 
                             <form th:action="@{/pharmacist/dashboard}" method="GET">
                                 <div class="input-group">
+                                    <label for="invoiceId" class="form-label">Invoice ID</label>
                                     <input type="number" class="form-control" id="invoiceId" name="invoiceId" placeholder="Invoice ID (e.g. 1)" step="1" required>
                                     
                                     <button class="btn btn-outline-secondary px-3" type="submit" id="searchInvoiceBtn">
@@ -283,8 +283,6 @@
             </div>
         </div>
 
-
-        </div>
     </main>
 </div>
 
