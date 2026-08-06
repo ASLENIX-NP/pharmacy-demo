@@ -649,12 +649,12 @@ public class AdminController {
             return "redirect:/admin/users";
         }
         catch (EmailAlreadyExistsException e){
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/admin/users/add";
 
         }
         catch (Exception e) {
-            model.addAttribute("error", "Failed to create user: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Failed to create user: " + e.getMessage());
             return "redirect:/admin/users";
         }
     }
