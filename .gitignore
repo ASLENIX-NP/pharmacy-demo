@@ -41,3 +41,6 @@ src/main/java/ASLENIX/pharmacy/demo/api/ProductRestController.java
 .prettierrc
 .prettierrc.json
 .prettierrc.js
+
+.env
+pharma demo.sql
