@@ -12,6 +12,7 @@ import ASLENIX.pharmacy.demo.services.TokenService;
 import ASLENIX.pharmacy.demo.utils.InventoryExcelExporter;
 import ASLENIX.pharmacy.demo.utils.ProductExcelExporter;
 import ASLENIX.pharmacy.demo.utils.UserExcelExporter;
+import ASLENIX.pharmacy.demo.validator.UserSecurityValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -67,6 +68,9 @@ public class AdminServicesImpl implements AdminServices {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private UserSecurityValidator userSecurityValidator;
+
 
 //  ===================  users  =================
 
@@ -84,15 +88,15 @@ public class AdminServicesImpl implements AdminServices {
 
         user.initializeProfileMetadata();
 
-        userRepository.save(user);
+        User updatedUser = userRepository.save(user);
 
-        PasswordResetToken token = tokenService.createToken(user);
-        emailService.sendPasswordSetupEmail(user.getEmail(), user.getUsername(), token.getToken());
+        PasswordResetToken token = tokenService.createToken(updatedUser);
+        emailService.sendPasswordSetupEmail(updatedUser.getEmail(), updatedUser.getUsername(), token.getToken());
 
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(Long activeUserId, User user) {
 
         Optional<User> oldUserOpt = userRepository.findById(user.getId());
         if(oldUserOpt.isEmpty()){
@@ -100,6 +104,8 @@ public class AdminServicesImpl implements AdminServices {
         }
 
         User oldUser = oldUserOpt.get();
+
+        userSecurityValidator.validateStatusChange(activeUserId, user , oldUser);
 
         user.setUsername(userService.generateUserName(user.getFirstName(), user.getId()));
         user.setInitials(userService.generateInitials(user.getFirstName(), user.getLastName()));
@@ -120,6 +126,12 @@ public class AdminServicesImpl implements AdminServices {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll(Sort.by(Sort.Direction.ASC,"status"));
+    }
+
+    @Override
+    public List<User> getAllExceptCurrent(Long currentUserId) {
+
+        return userRepository.findAllExceptUser(currentUserId);
     }
 
     @Override

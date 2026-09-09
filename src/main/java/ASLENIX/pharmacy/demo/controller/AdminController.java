@@ -1,13 +1,8 @@
 package ASLENIX.pharmacy.demo.controller;
 
 import ASLENIX.pharmacy.demo.Enums.*;
-import ASLENIX.pharmacy.demo.exception.EmailAlreadyExistsException;
-import ASLENIX.pharmacy.demo.exception.ExpiryDateNotificationNotFound;
-import ASLENIX.pharmacy.demo.exception.InventoryBatchNotFoundException;
-import ASLENIX.pharmacy.demo.exception.UserNotFoundException;
+import ASLENIX.pharmacy.demo.exception.*;
 import ASLENIX.pharmacy.demo.model.*;
-import ASLENIX.pharmacy.demo.services.EmailService;
-import ASLENIX.pharmacy.demo.services.TokenService;
 import ASLENIX.pharmacy.demo.servicesImpl.AdminServicesImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +10,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -617,7 +611,8 @@ public class AdminController {
         if (isNotAdmin(session)) {
             return "redirect:/login";
         }
-        List<User> users = adminServices.getAllUsers();
+        User activeUser= (User) session.getAttribute("activeUser");
+        List<User> users = adminServices.getAllExceptCurrent(activeUser.getId());
         model.addAttribute("users", users);
         return "adminUser";
     }
@@ -682,13 +677,15 @@ public class AdminController {
             return "redirect:/login";
         }
 
+        User activeUser = (User) session.getAttribute("activeUser");
+
         try {
-            adminServices.updateUser(user);
+            adminServices.updateUser(activeUser.getId(), user);
             redirectAttributes.addFlashAttribute("success",
                     "User '" + user.getFirstName() + " " + user.getLastName() + "' updated successfully");
             return "redirect:/admin/users";
 
-        }catch (UserNotFoundException e){
+        }catch (UserNotFoundException | SelfModificationException | LastAdminLockoutException e){
             redirectAttributes.addFlashAttribute("error",  e.getMessage());
             return "redirect:/admin/users";
         }

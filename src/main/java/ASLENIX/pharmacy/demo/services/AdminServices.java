@@ -2,13 +2,11 @@ package ASLENIX.pharmacy.demo.services;
 
 import ASLENIX.pharmacy.demo.Enums.BatchApprovalStatus;
 import ASLENIX.pharmacy.demo.model.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
 
 public interface AdminServices {
 
@@ -16,11 +14,13 @@ public interface AdminServices {
 
     void addUser(User user);
 
-    void updateUser( User user);
+    void updateUser( Long activeUserId,  User user);
 
     User getUserById(Long id);
 
     List<User> getAllUsers();
+
+    List<User> getAllExceptCurrent(Long currentUserId);
 
     boolean isEmailTaken(String email);
 
