@@ -25,7 +25,7 @@ public class ScheduleTracker {
     @Column( nullable = false)
     private LocalDateTime lastRunTimestamp;
 
-    @Column(nullable = false , insertable = false , updatable = false)
+    @Column(nullable = false , updatable = false)
     private Integer thresholdTime =  24;
 
 }

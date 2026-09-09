@@ -73,10 +73,23 @@ public class WindowBufferedDispatcher {
         processJobExecution(targetJobName);
     }
 
+    private ScheduleTracker initializeScheduleTrackers(JobType jobType) {
+        ScheduleTracker scheduleTracker = new ScheduleTracker();
+        scheduleTracker.setJobType(jobType);
+        scheduleTracker.setLastRunTimestamp(LocalDateTime.now().minusDays(1));
+        scheduleTracker.setThresholdTime(24);
+        return scheduleTrackerRepository.save(scheduleTracker);
+    }
+
     private void processJobExecution(JobType jobType) {
 
         ScheduleTracker scheduleTracker = scheduleTrackerRepository.findByJobType(jobType);
 
+        if(scheduleTracker == null) {
+            scheduleTracker = initializeScheduleTrackers(jobType);
+        }
+
+        assert scheduleTracker != null;
         LocalDateTime cycleCutoff = LocalDateTime.now().minusHours(scheduleTracker.getThresholdTime());
 
 // Guard Clause: Exit early if the task ran within the threshold time
