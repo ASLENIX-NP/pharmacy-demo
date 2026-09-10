@@ -82,8 +82,8 @@ public class AdminServicesImpl implements AdminServices {
             throw new EmailAlreadyExistsException("Email is already registered.");
         }
 
-        user.setCreatedAt(java.time.LocalDate.now());
-        user.setPassword(java.util.UUID.randomUUID().toString());
+        user.setCreatedAt(LocalDate.now());
+        user.setPassword(UUID.randomUUID().toString());
         user.setStatus(UserStatus.PENDING);
 
         user.initializeProfileMetadata();
