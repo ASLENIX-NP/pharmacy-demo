@@ -44,3 +44,5 @@ src/main/java/ASLENIX/pharmacy/demo/api/ProductRestController.java
 
 .env
 pharma demo.sql
+
+docker-compose-local.yml
