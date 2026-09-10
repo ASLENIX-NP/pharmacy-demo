@@ -1,27 +1,7 @@
 version: '3.8'
 
 services:
-  # 1. MySQL Database Container
-  pharmacy-db:
-    image: mysql:8.0
-    container_name: pharmacy-db
-    restart: always
-    environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "${DB_PORT:-3307}:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./pharma demo.sql:/docker-entrypoint-initdb.d/pharma demo.sql:ro
-
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-  # 2. Spring Boot Application Container
+  # Spring Boot Application Container
   app:
     build: .
     container_name: pharmacy-demo-app
@@ -29,16 +9,10 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_HOST: pharmacy-db
-      DB_PORT: 3306
+      DB_HOST: ${DB_HOST}        # Set your 3rd-party DB host in your .env file
+      DB_PORT: ${DB_PORT}   # Set your 3rd-party DB port (default: 3306)
       DB_NAME: ${DB_NAME}
-      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
-    depends_on:
-      pharmacy-db:
-        condition: service_healthy
-
-volumes:
-  mysql_data:
